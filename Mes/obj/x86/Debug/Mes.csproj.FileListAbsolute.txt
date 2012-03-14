@@ -1,0 +1,5 @@
+D:\Bobby Documents\UWSTUFF\3B\ECE355\Implementation\Mesmerize-One-Prime-X2\Mes\bin\Debug\Mes.exe
+D:\Bobby Documents\UWSTUFF\3B\ECE355\Implementation\Mesmerize-One-Prime-X2\Mes\bin\Debug\Mes.pdb
+D:\Bobby Documents\UWSTUFF\3B\ECE355\Implementation\Mesmerize-One-Prime-X2\Mes\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Bobby Documents\UWSTUFF\3B\ECE355\Implementation\Mesmerize-One-Prime-X2\Mes\obj\x86\Debug\Mes.exe
+D:\Bobby Documents\UWSTUFF\3B\ECE355\Implementation\Mesmerize-One-Prime-X2\Mes\obj\x86\Debug\Mes.pdb
