@@ -1,13 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
-public class Sensor
+public abstract class Sensor : IObservable<Sensor>
 {
-    public bool isEnabled;
-    public bool isTriggered;
-    public string location;
-    public string sensorType;
-    public bool canTrigger;
-    public int sensorId;
+    bool isEnabled;
+    bool isTriggered;
+    string location;
+    string sensorType;
+    bool canTrigger;
+    int sensorId;
+
+    public Sensor()
+    {
+       observers = new List<IObserver<Sensor>>();
+    }
+
+    private List<IObserver<Sensor>> observers;
+
 
     public void Enable()
     {
@@ -29,6 +38,10 @@ public class Sensor
         isTriggered = false;
     }
 
+    public void SetType(string s)
+    {
+        sensorType = s;
+    }
     public bool IsEnabled()
     {
         return isEnabled;
@@ -44,4 +57,28 @@ public class Sensor
 
     }
 
+    public IDisposable Subscribe(IObserver<Sensor> observer)
+    {
+        if (!observers.Contains(observer))
+            observers.Add(observer);
+        return new Unsubscriber(observers, observer);
+    }
+
+    private class Unsubscriber : IDisposable
+    {
+        private List<IObserver<Sensor>> _observers;
+        private IObserver<Sensor> _observer;
+
+        public Unsubscriber(List<IObserver<Sensor>> observers, IObserver<Sensor> observer)
+        {
+            this._observers = observers;
+            this._observer = observer;
+        }
+
+        public void Dispose()
+        {
+            if (_observer != null && _observers.Contains(_observer))
+                _observers.Remove(_observer);
+        }
+    }
 }
