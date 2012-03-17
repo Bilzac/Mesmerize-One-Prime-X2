@@ -27,6 +27,11 @@ namespace Mes
             return online;
         }
 
+        public void printTerminal(string outString)
+        {
+            Console.WriteLine(outString);
+        }
+
         public void runTerminal()
         {
 
@@ -71,6 +76,11 @@ namespace Mes
         {
 
             bool running = true;
+            DB_Manager mesDB = new DB_Manager();
+            mesDB.setConnection();
+            mesDB.createSensorTable();
+            mesDB.createMonitorTable();
+            mesDB.createAlarmTable();
             Terminal serverTerminal = new Terminal();
             Thread terminalThread = new Thread(new ThreadStart(serverTerminal.runTerminal));
 
