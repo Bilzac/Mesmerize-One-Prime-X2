@@ -1,4 +1,4 @@
-Mes/bin
-Mes/obj
+Mes/bin/
+Mes/obj/
 *.suo
 *.user
