@@ -1,4 +1,6 @@
 Mes/bin/
 Mes/obj/
+Mes/SensorSim/obj/
+Mes/SensorSim/bin/
 *.suo
 *.user
