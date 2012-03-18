@@ -15,12 +15,15 @@ namespace Mes
         public int messageValue;        // This is the parameter value (for integer parameters)
     };
     
-    class SecuritySystem
+    class SecuritySystem : System
     {
         MessageQueue queue = null;
         Message message = null;
         SensorMessage sensorMessage = null;
         string queueName = @".\Private$\security";
+
+        private int id;
+
         public SecuritySystem()
         {
             if (MessageQueue.Exists(queueName))
@@ -66,6 +69,19 @@ namespace Mes
                     Console.WriteLine("Queue .\\security not Found");
                 }
             }
+        }
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+		  
         }
     }
 }

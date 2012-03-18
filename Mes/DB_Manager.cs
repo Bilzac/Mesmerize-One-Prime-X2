@@ -37,9 +37,10 @@ namespace Mes
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
             }
             finally
             {
@@ -65,9 +66,10 @@ namespace Mes
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
             }
             finally
             {
@@ -93,15 +95,75 @@ namespace Mes
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
             }
             finally
             {
                 sqlConnection.Close();
             }
             return false;
+        }
+
+        public bool createSystemTable()
+        {
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+
+                sqlConnection.Open();
+
+                sqlCmd.CommandText = "Create Table IF NOT EXISTS " +
+                                        "Systems (systemId int NOT NULL AUTO_INCREMENT, systemType int NOT NULL, PRIMARY KEY(systemId) )";
+                sqlCmd.ExecuteNonQuery();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return false;
+        }
+
+        public int addSystem(int type)
+        {
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+                sqlConnection.Open();
+
+                sqlCmd.CommandText = "INSERT INTO " +
+                                        "Systems (systemType) VALUES ("+ type +")";
+
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.CommandText = "SELECT LAST_INSERT_ID() FROM Systems";
+                return Convert.ToInt32(sqlCmd.ExecuteScalar());
+                //MySqlDataReader reader = sqlCmd.ExecuteReader();
+                //return (int)reader[0];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return -1;
         }
 
         public string viewSensorsTable()

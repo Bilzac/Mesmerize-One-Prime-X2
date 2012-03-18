@@ -83,28 +83,36 @@ namespace Mes
 
     class Server
     {
+        DB_Manager mesDB;
+        List<System> systemList;
+        Thread terminalThread;
 
-        static void Main(string[] args)
+        bool running;
+
+        public Server()
         {
-            bool running = true;
-            DB_Manager mesDB = new DB_Manager();
+            systemList = new List<System>();
+            mesDB = new DB_Manager();
+            //Load Config options here instead of doing this over and over again.
             mesDB.setConnection();
+            mesDB.createSystemTable();
             mesDB.createSensorTable();
             mesDB.createMonitorTable();
             mesDB.createAlarmTable();
 
+            AddSecuritySystem();
+        }
+
+        public void Run()
+        {
+            running = true;
+
             Terminal serverTerminal = new Terminal();
-            SecuritySystem securitySystem = new SecuritySystem();
-
-            Thread terminalThread = new Thread(new ThreadStart(serverTerminal.runTerminal));
-            Thread securitySystemThread = new Thread(new ThreadStart(securitySystem.Run));
-
+            terminalThread = new Thread(new ThreadStart(serverTerminal.runTerminal));
             terminalThread.Start();
-            securitySystemThread.Start();
             
             while (running)
             {
-
                 Thread.Sleep(1000);
 
                 if (!serverTerminal.terminalState())
@@ -117,5 +125,20 @@ namespace Mes
                 }
             }
         }
+
+        public void AddSecuritySystem()
+        {
+            SecuritySystem securitySystem = new SecuritySystem();
+            int id = mesDB.addSystem(1);
+            if (id > 0)
+            {
+                securitySystem.Id = id;
+                systemList.Add(securitySystem);
+                Thread securitySystemThread = new Thread(new ThreadStart(securitySystem.Run));
+                securitySystemThread.Start();
+            }
+            
+        }
+
     }
 }
