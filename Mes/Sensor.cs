@@ -93,16 +93,6 @@ public abstract class Sensor : IObservable<Sensor>
         }
     }
 
-    public void SendEvent()
-    {
-
-    }
-
-    public void ReceiveEvent()
-    {
-
-    }
-
     public IDisposable Subscribe(IObserver<Sensor> observer)
     {
         if (!observers.Contains(observer))

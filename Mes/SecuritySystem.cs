@@ -7,12 +7,13 @@ using System.Messaging;
 
 namespace Mes
 {
+    // object to fill a message with sensor information
     public class SensorMessage {
         public int sensorId;
         public int messageType;         // The type may indicate what parameter is changing
         public string messageString;    // This is the parameter value (for string parameters)
         public int messageValue;        // This is the parameter value (for integer parameters)
-    }
+    };
     
     class SecuritySystem
     {
@@ -40,10 +41,25 @@ namespace Mes
             {
                 if (MessageQueue.Exists(queueName))
                 {
-                    MessageQueue queue = new MessageQueue(queueName);
-                    queue.Formatter = new XmlMessageFormatter(new string[]{"System.String"});
-                    Message Mymessage = queue.Receive();
-                    Console.WriteLine(Mymessage.Body);            
+                    queue = new MessageQueue(queueName);
+                    queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(SensorMessage) });
+                    try
+                    {
+                        // Receive and format the message.
+                        SensorMessage sensorMessage = (SensorMessage)queue.Receive().Body;
+                        Console.WriteLine("Received: {0} {1}", sensorMessage.sensorId, sensorMessage.messageType);
+                    }
+
+                    catch (MessageQueueException)
+                    {
+                        // Handle Message Queuing exceptions.
+                    }
+
+                    // Handle invalid serialization format.
+                    catch (InvalidOperationException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
                 }
                 else
                 {

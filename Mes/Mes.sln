@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mes", "Mes.csproj", "{4BC82FDD-A9ED-4A5B-80FC-325D07A6C67F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SensorSim", "SensorSim\SensorSim.csproj", "{469E6BF7-BEDB-44BC-B91A-83FD0FA7CA2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{4BC82FDD-A9ED-4A5B-80FC-325D07A6C67F}.Debug|x86.Build.0 = Debug|x86
 		{4BC82FDD-A9ED-4A5B-80FC-325D07A6C67F}.Release|x86.ActiveCfg = Release|x86
 		{4BC82FDD-A9ED-4A5B-80FC-325D07A6C67F}.Release|x86.Build.0 = Release|x86
+		{469E6BF7-BEDB-44BC-B91A-83FD0FA7CA2D}.Debug|x86.ActiveCfg = Debug|x86
+		{469E6BF7-BEDB-44BC-B91A-83FD0FA7CA2D}.Debug|x86.Build.0 = Debug|x86
+		{469E6BF7-BEDB-44BC-B91A-83FD0FA7CA2D}.Release|x86.ActiveCfg = Release|x86
+		{469E6BF7-BEDB-44BC-B91A-83FD0FA7CA2D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

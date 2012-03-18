@@ -14,5 +14,4 @@ namespace Mes
             this.Type = "smoke";
         }
     }
-    
 }
