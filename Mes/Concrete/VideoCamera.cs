@@ -9,11 +9,9 @@ namespace Mes
     {
         public VideoCamera()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "video";
-            monitorId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "video";
         }
     }
 }

@@ -9,12 +9,9 @@ namespace Mes
     {
         public MagneticSensor()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "magnetic";
-            canTrigger = true;
-            sensorId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "magnetic";
         }
     }
 }

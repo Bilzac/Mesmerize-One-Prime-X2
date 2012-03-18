@@ -10,6 +10,10 @@ public abstract class Sensor : IObservable<Sensor>
     bool canTrigger;
     int sensorId;
 
+    public delegate void OnEnableEventHandler();
+    public event EventHandler EnableChanged;
+    public event EventHandler TriggerChanged;
+
     public Sensor()
     {
        observers = new List<IObserver<Sensor>>();
@@ -20,31 +24,73 @@ public abstract class Sensor : IObservable<Sensor>
 
     public void Enable()
     {
-        isEnabled = true;
+        if (!isEnabled) {
+            isEnabled = true;
+            if (this.EnableChanged != null)
+                this.EnableChanged(this, new EventArgs());
+        }
     }
 
     public void Disable()
     {
-        isEnabled = false;
+        if (isEnabled)
+        {
+            isEnabled = false;
+            if (this.EnableChanged != null)
+                this.EnableChanged(this, new EventArgs());
+        }
     }
 
     public void Trigger()
     {
-        isTriggered = true;
+        if (!isTriggered)
+        {
+            isTriggered = true;
+            if (this.TriggerChanged != null)
+                this.TriggerChanged(this, new EventArgs());
+        }
     }
 
     public void Untrigger()
     {
-        isTriggered = false;
+        if (isTriggered)
+        {
+            isTriggered = false;
+            if (this.TriggerChanged != null)
+                this.TriggerChanged(this, new EventArgs());
+        }
     }
 
-    public void SetType(string s)
+    //********************* ACCESSORS *******************//
+
+    // Sensor type Accessor
+    public string Type
     {
-        sensorType = s;
+        get
+        {
+            return sensorType;
+        }
+        set
+        {
+            sensorType = value;
+        }
     }
-    public bool IsEnabled()
+
+    // Sensor ID Accessor
+    public int Id
     {
-        return isEnabled;
+        get
+        {
+            return sensorId;
+        }
+    }
+
+    public bool IsEnabled
+    {
+        get
+        {
+            return isEnabled;
+        }
     }
 
     public void SendEvent()

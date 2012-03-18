@@ -9,12 +9,9 @@ namespace Mes
     {
         public MotionSensor()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "motion";
-            canTrigger = true;
-            sensorId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "motion";
         }
     }
 }

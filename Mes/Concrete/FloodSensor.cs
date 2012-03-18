@@ -11,7 +11,7 @@ namespace Mes
         {
             this.Disable();
             this.Untrigger();
-            this.SetType("flood");
+            this.Type = "flood";
         }
     }
 }

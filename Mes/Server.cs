@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Messaging;
 
 namespace Mes
 {
 
     public class Terminal
     {
-        
+        // Needed for sending messages to the security system to handle
+        string queueName = @".\Private$\security";
+
         bool online = true;
 
         public void startTerminal()
@@ -46,6 +49,15 @@ namespace Mes
                 {
                     case "ADDSENSOR":
                         Console.WriteLine("Add Sensor:");
+                        if (MessageQueue.Exists(queueName))
+                        {
+                            MessageQueue queue = new MessageQueue(queueName);
+                            queue.Send("Add Sensor message","Label");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Terminal - Queue .\\security not Found");
+                        }
                         break;
                     case "EDITSENSOR":
                         Console.WriteLine("Edit Sensor:");
@@ -74,18 +86,22 @@ namespace Mes
 
         static void Main(string[] args)
         {
-
             bool running = true;
             DB_Manager mesDB = new DB_Manager();
             mesDB.setConnection();
             mesDB.createSensorTable();
             mesDB.createMonitorTable();
             mesDB.createAlarmTable();
+
             Terminal serverTerminal = new Terminal();
+            SecuritySystem securitySystem = new SecuritySystem();
+
             Thread terminalThread = new Thread(new ThreadStart(serverTerminal.runTerminal));
+            Thread securitySystemThread = new Thread(new ThreadStart(securitySystem.Run));
 
             terminalThread.Start();
-
+            securitySystemThread.Start();
+            
             while (running)
             {
 

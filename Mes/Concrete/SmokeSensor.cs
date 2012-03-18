@@ -9,12 +9,9 @@ namespace Mes
     {
         public SmokeSensor()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "smoke";
-            canTrigger = true;
-            sensorId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "smoke";
         }
     }
     
