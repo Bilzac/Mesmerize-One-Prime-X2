@@ -13,7 +13,9 @@ namespace Mes
         // Needed for sending messages to the security system to handle
         string queueName = @".\Private$\security";
 
+        int authentication = -1;
         bool online = true;
+        DB_Manager mesDB;
 
         public void startTerminal()
         {
@@ -37,10 +39,30 @@ namespace Mes
 
         public void runTerminal()
         {
-
+            mesDB = new DB_Manager();
+            mesDB.setConnection();
             Console.WriteLine("Intializing Security Server.");
+            
+            while (authentication == -1)
+            {
+                Console.WriteLine("Please Enter Your Username");
+                String username = Console.ReadLine();
+                Console.WriteLine("Please Enter Your Password");
+                String password = Console.ReadLine();
+                authentication = mesDB.checkAuthentication(username, password);
+                if (authentication == -1)
+                {
+                    Console.WriteLine("Incorrect Credentials Please Try Again!");
+                }
+            }
+            Console.WriteLine("------------_________---------------");
+            Console.WriteLine("------------|       |---------------");
+            Console.WriteLine("---*CLICK*--________|---------------");
+            Console.WriteLine("------------|       |---------------");
+            Console.WriteLine("------------|   O   |---------------");
+            Console.WriteLine("------------|_______|---------------");
             Console.WriteLine("Welcome to Mesmerize One Prime X2");
-
+            Console.WriteLine("");
             while (online)
             {
                 String command = Console.ReadLine();
@@ -98,6 +120,7 @@ namespace Mes
 
             
             mesDB.setConnection();
+            mesDB.createCredentialsTable();
             mesDB.createSystemTable();
             mesDB.createSensorTable();
             mesDB.createMonitorTable();

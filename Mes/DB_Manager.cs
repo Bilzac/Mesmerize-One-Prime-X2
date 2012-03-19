@@ -20,6 +20,75 @@ namespace Mes
             connectionString = string.Format("Server={0};Database={1};UID={2};Password={3}", server, database, user, password);
         }
 
+        public int checkAuthentication(String username, String password)
+        {
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+            int type = -1;
+
+            try
+            { 
+                sqlConnection.Open();
+                sqlCmd.CommandText = "SELECT type FROM Credentials WHERE username=\"" + username + "\" AND password=\"" + password + "\""; //Check if any admin credentials exist.
+                MySqlDataReader rdr = sqlCmd.ExecuteReader();
+                if (rdr.Read())
+                {
+                    type = rdr.GetInt32(0);  
+                }
+                rdr.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return type;
+        }
+
+        public bool createCredentialsTable()
+        {
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+                sqlConnection.Open();
+
+                sqlCmd.CommandText = "Create Table IF NOT EXISTS " +
+                                        "Credentials ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, type int NOT NULL , PRIMARY KEY(username) )";
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.CommandText = "SELECT count(username) FROM Credentials WHERE type=1"; //Check if any admin credentials exist.
+                MySqlDataReader rdr = sqlCmd.ExecuteReader();
+                if(rdr.Read())
+                {
+                    if (rdr.GetInt32(0) == 0)
+                    {
+                        sqlCmd.CommandText = "INSERT INTO CREDENTIALS (username, password, type) VALUES (\"admin\",\"adminpass\",1)";
+                    }
+                }
+                rdr.Close();
+                sqlCmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return false;
+        }
+
+
         public bool createSensorTable()
         {
 
