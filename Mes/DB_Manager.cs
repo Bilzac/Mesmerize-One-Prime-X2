@@ -168,11 +168,11 @@ namespace Mes
             return id;
         }
 
-        public List<System> getSensors()
+        public List<GenericSystem> getSensors()
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
-            List<System> systemList = new List<System>();
+            List<GenericSystem> systemList = new List<GenericSystem>();
 
             try
             {
@@ -315,11 +315,11 @@ namespace Mes
             return id;
         }
 
-        public List<System> getSystems()
+        public List<GenericSystem> getSystems()
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
-            List<System> systemList = new List<System>();
+            List<GenericSystem> systemList = new List<GenericSystem>();
 
             try
             {

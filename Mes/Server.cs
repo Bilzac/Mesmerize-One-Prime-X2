@@ -16,6 +16,7 @@ namespace Mes
         int authentication = -1;
         bool online = true;
         DB_Manager mesDB;
+        Logger terminalLog;
 
         public void startTerminal()
         {
@@ -39,6 +40,7 @@ namespace Mes
 
         public void runTerminal()
         {
+            terminalLog = new Logger();
             mesDB = new DB_Manager();
             mesDB.setConnection();
             Console.WriteLine("Intializing Security Server.");
@@ -53,8 +55,10 @@ namespace Mes
                 if (authentication == -1)
                 {
                     Console.WriteLine("Incorrect Credentials Please Try Again!");
+                    terminalLog.appendLog("Warning invalid credentials were entered!");
                 }
             }
+            terminalLog.appendLog("Connection to the server has been established.");
             Console.WriteLine("------------_________---------------");
             Console.WriteLine("------------|       |---------------");
             Console.WriteLine("---*CLICK*--________|---------------");
@@ -92,6 +96,7 @@ namespace Mes
                         break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
+                        terminalLog.appendLog("Connection to server has been terminated by the user.");
                         online = false;
                         break;
                     default:
@@ -106,7 +111,7 @@ namespace Mes
     class Server
     {
         DB_Manager mesDB;
-        List<System> systemList;
+        List<GenericSystem> systemList;
         Thread terminalThread;
         List<Thread> systemThreads;
 
@@ -114,7 +119,7 @@ namespace Mes
 
         public Server()
         {
-            systemList = new List<System>();
+            systemList = new List<GenericSystem>();
             mesDB = new DB_Manager();
             systemThreads = new List<Thread>();
 

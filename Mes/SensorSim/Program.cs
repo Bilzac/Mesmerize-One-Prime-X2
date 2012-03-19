@@ -85,6 +85,7 @@ namespace SensorSim
                         }
                         break;
                     case "EDIT":
+                        break;
                     case "CONFIG":
                         Console.WriteLine("Edit Sensor:");
                         break;
@@ -118,6 +119,7 @@ namespace SensorSim
                     case "HELP":
                         Console.WriteLine("Available commands:");
                         Console.WriteLine("add\nedit\ntrigger\nremove\nexit\nhelp");
+                        break;
                     default:
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         break;

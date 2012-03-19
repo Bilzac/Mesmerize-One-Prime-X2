@@ -15,12 +15,13 @@ namespace Mes
         public int messageValue;        // This is the parameter value (for integer parameters)
     };
     
-    class SecuritySystem : System
+    class SecuritySystem : GenericSystem
     {
         MessageQueue queue = null;
         Message message = null;
         SensorMessage sensorMessage = null;
         string queueName = @".\Private$\security";
+        Logger msgLogger = new Logger();
 
         private int id;
 
@@ -61,6 +62,7 @@ namespace Mes
                     {
                         // Receive and format the message.
                         SensorMessage sensorMessage = (SensorMessage)queue.Receive().Body;
+                        msgLogger.appendLog(msgLogger.formatSensorMessage(sensorMessage));
                         Console.WriteLine("Received: {0} {1}", sensorMessage.sensorId, sensorMessage.messageType);
                     }
 

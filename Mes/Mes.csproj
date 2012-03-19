@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data, Version=6.4.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Messaging" />
@@ -50,6 +50,7 @@
     <Compile Include="Concrete\FloodSensor.cs" />
     <Compile Include="Concrete\LightAlarm.cs" />
     <Compile Include="Concrete\MagneticSensor.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MesDataSet.Designer.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="Concrete\MotionSensor.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="Concrete\SmokeSensor.cs" />
     <Compile Include="Concrete\VideoCamera.cs" />
     <Compile Include="Start.cs" />
-    <Compile Include="System.cs" />
+    <Compile Include="GenericSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
