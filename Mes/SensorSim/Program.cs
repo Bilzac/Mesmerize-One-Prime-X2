@@ -9,30 +9,79 @@ namespace SensorSim
     {
         // Enumerator for different sensor actions
         enum Actions {Add, Edit, Trig};
+
+        // Needed for sending messages to the security system to handle
+        static string queueName = @".\Private$\security";
+
+        // Send a message to the central system with component configuration.
+        // Retrieve an Id to save into the sensor
+        static public void SimulatorAddSensor(List<Mes.Sensor> inList)
+        {
+            Mes.SensorMessage sensorMessage = new Mes.SensorMessage();
+            sensorMessage.messageType = (int)Actions.Add;
+            if (MessageQueue.Exists(queueName))
+            {
+                MessageQueue queue = new MessageQueue(queueName);
+                queue.Send(sensorMessage);
+            }
+            else
+            {
+                Console.WriteLine("Terminal - Queue .\\security not Found");
+            }
+        }
+
+        // Send a message to the central system to request component configuration for sensor of Id.
+        // Retrieve configuration, edit it and send back to server.
+        public void SimulatorEditSensor()
+        {
+
+        }
+
+        // Send a message to the central system indicating intentional disconnection of sensor.
+        public void SimulatorRemoveSensor()
+        {
+
+        }
+
+        // Send a message to the central system indicating triggered sensor.
+        public void SimulatorTriggerSensor()
+        {
+
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Sensor Simulation for Mesmerize One Prime X2");
-            
+
+            // instantiate objects
+            List<Mes.Sensor> realSensors = new List<Mes.Sensor>();
+            List<Mes.Monitor> realMonitors = new List<Mes.Monitor>();
+            List<Mes.Alarm> realAlarms = new List<Mes.Alarm>();
             Mes.SensorMessage sensorMessage = new Mes.SensorMessage();
-            // Needed for sending messages to the security system to handle
-            string queueName = @".\Private$\security";
 
             while (true)
             {
+                Console.WriteLine("Enter a command:");
                 String command = Console.ReadLine();
+                string inText;
 
                 switch (command.ToUpper())
                 {
                     case "ADD":
-                        Console.WriteLine("Add Sensor:");
-                        if (MessageQueue.Exists(queueName))
+                        Console.WriteLine("Add sensor, monitor or alarm? [s|m|a]:");
+                        inText = Console.ReadLine().ToUpper();
+                        if (inText.Equals("S"))
                         {
-                            MessageQueue queue = new MessageQueue(queueName);
-                            queue.Send("Add Sensor message","Label");
+                            SimulatorAddSensor(realSensors);
+                        }
+                        else if (inText.Equals("M"))
+                        {
+                        }
+                        else if (inText.Equals("A"))
+                        {
                         }
                         else
                         {
-                            Console.WriteLine("Terminal - Queue .\\security not Found");
+                            Console.WriteLine("Invalid type of node");
                         }
                         break;
                     case "EDIT":
@@ -41,9 +90,9 @@ namespace SensorSim
                         break;
                     case "TRIGGER":
                         Console.WriteLine("Trigger sensor #: ");
-                        string value = Console.ReadLine();
+                        inText = Console.ReadLine();
                         // set message data
-                        sensorMessage.sensorId = Convert.ToInt32(value);
+                        sensorMessage.sensorId = Convert.ToInt32(inText);
                         sensorMessage.messageType = (int)Actions.Trig;
 
                         // construct message
@@ -66,6 +115,9 @@ namespace SensorSim
                         break;
                     case "EXIT":
                         return;
+                    case "HELP":
+                        Console.WriteLine("Available commands:");
+                        Console.WriteLine("add\nedit\ntrigger\nremove\nexit\nhelp");
                     default:
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         break;
