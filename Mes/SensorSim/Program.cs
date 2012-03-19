@@ -5,6 +5,41 @@ using System.Text;
 using System.Messaging;
 namespace SensorSim
 {
+    // A sensor extended to run as a thread and receive messages in a simulation
+    class SimSensor : Mes.Sensor
+    {
+        MessageQueue queue;
+        string queueName;
+        int realSensorNum;
+
+        public SimSensor(int number) {
+            // format the queueName and check if it exists before making it
+            realSensorNum = number;
+            queueName = string.Format(@".\Private$\sensor{0}", realSensorNum);
+            if (MessageQueue.Exists(queueName)){
+                queue = new MessageQueue(queueName);
+                Console.WriteLine("The queueName is taken and will be reused.");
+            }
+            else
+            {
+                queue = MessageQueue.Create(queueName);
+                queue.Label = string.Format("Sensor {0} queue", realSensorNum);
+                Console.WriteLine("Queue Created:");
+                Console.WriteLine("Path: {0}, queue.Path");
+                Console.WriteLine("FormatName: {0}, queue.FormatName");
+            }
+        }
+        public void Run()
+        {
+            while(true)
+            {
+            }
+        }
+        ~SimSensor(){
+            MessageQueue.Delete(queueName); // Delete the queue from the server
+        }
+    }
+
     class Program
     {
         // Enumerator for different sensor actions
@@ -22,7 +57,9 @@ namespace SensorSim
             if (MessageQueue.Exists(queueName))
             {
                 MessageQueue queue = new MessageQueue(queueName);
-                queue.Send(sensorMessage);
+                Message message = new Message(sensorMessage);
+                message.
+                queue.Send(message);
             }
             else
             {
@@ -99,7 +136,7 @@ namespace SensorSim
                         // construct message
                         Message message = new Message();
                         message.Body = sensorMessage;
-                        
+
                         // send the message to the security system
                         if (MessageQueue.Exists(queueName))
                         {
