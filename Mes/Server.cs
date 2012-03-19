@@ -17,6 +17,7 @@ namespace Mes
         bool online = true;
         DB_Manager mesDB;
         Logger terminalLog;
+        TestHarness terminalTest;
 
         public void startTerminal()
         {
@@ -43,8 +44,9 @@ namespace Mes
             terminalLog = new Logger();
             mesDB = new DB_Manager();
             mesDB.setConnection();
+            terminalTest = new TestHarness();
             Console.WriteLine("Intializing Security Server.");
-            
+            terminalLog.appendLog("Security Server Initializating");
             while (authentication == -1)
             {
                 Console.WriteLine("Please Enter Your Username");
@@ -77,6 +79,7 @@ namespace Mes
                         Console.WriteLine("Add Sensor:");
                         if (MessageQueue.Exists(queueName))
                         {
+                            terminalLog.appendLog("Add Sensor Command Executed");
                             MessageQueue queue = new MessageQueue(queueName);
                             queue.Send("Add Sensor message","Label");
                         }
@@ -87,12 +90,22 @@ namespace Mes
                         break;
                     case "EDITSENSOR":
                         Console.WriteLine("Edit Sensor:");
+                        terminalLog.appendLog("Edit Sensor Command Executed");
                         break;
                     case "REMOVESENSOR":
                         Console.WriteLine("Remove Sensor:");
+                        terminalLog.appendLog("Remove Sensor Command Executed");
                         break;
                     case "VIEWSENSORS":
-                        Console.WriteLine("Adding Sensor");
+                        Console.WriteLine("Viewing Sensor");
+                        terminalLog.appendLog("View Sensor Command Executed");
+                        break;
+                    case "TEST":
+                        Console.WriteLine("Please specify the file path to the test file.");
+                        terminalLog.appendLog("Executing Test Simulation of Security System");
+                        terminalTest.File = Console.ReadLine();
+                        terminalTest.printCommands(terminalTest.getCommands());
+                        terminalLog.appendLog("Test Simulation of Security System Complete");
                         break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
@@ -101,6 +114,7 @@ namespace Mes
                         break;
                     default:
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
+                        terminalLog.appendLog("Invalid Command Entered: " + command);
                         break;
                 }
                 Thread.Sleep(0);
@@ -130,8 +144,6 @@ namespace Mes
             mesDB.createSensorTable();
             mesDB.createMonitorTable();
             mesDB.createAlarmTable();
-
-            
 
             systemList = mesDB.getSystems();
             if (systemList.Count == 0)
