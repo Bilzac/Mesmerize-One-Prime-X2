@@ -86,6 +86,7 @@ namespace Mes
         DB_Manager mesDB;
         List<System> systemList;
         Thread terminalThread;
+        List<Thread> systemThreads;
 
         bool running;
 
@@ -93,20 +94,28 @@ namespace Mes
         {
             systemList = new List<System>();
             mesDB = new DB_Manager();
-            //Load Config options here instead of doing this over and over again.
+            systemThreads = new List<Thread>();
+
+            
             mesDB.setConnection();
             mesDB.createSystemTable();
             mesDB.createSensorTable();
             mesDB.createMonitorTable();
             mesDB.createAlarmTable();
 
-            AddSecuritySystem();
+            
+
+            systemList = mesDB.getSystems();
+            if (systemList.Count == 0)
+            {
+                AddSecuritySystem();
+            }            
         }
 
         public void Run()
         {
             running = true;
-
+            startSystems();
             Terminal serverTerminal = new Terminal();
             terminalThread = new Thread(new ThreadStart(serverTerminal.runTerminal));
             terminalThread.Start();
@@ -138,6 +147,14 @@ namespace Mes
                 securitySystemThread.Start();
             }
             
+        }
+
+        public void startSystems()
+        {
+            for (int i = 0; i < systemList.Count; i++)
+            {
+                systemThreads.Add(new Thread(new ThreadStart(systemList[i].Run)));
+            }
         }
 
     }

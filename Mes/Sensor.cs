@@ -9,6 +9,7 @@ public abstract class Sensor : IObservable<Sensor>
     string sensorType;
     bool canTrigger;
     int sensorId;
+    int parentId;
 
     public delegate void OnEnableEventHandler();
     public event EventHandler EnableChanged;
@@ -83,6 +84,10 @@ public abstract class Sensor : IObservable<Sensor>
         {
             return sensorId;
         }
+        set
+        {
+            sensorId = value;
+        }
     }
 
     public bool IsEnabled
@@ -90,6 +95,42 @@ public abstract class Sensor : IObservable<Sensor>
         get
         {
             return isEnabled;
+        }
+        set
+        {
+            isEnabled = value;
+        }
+    }
+
+    public bool IsTriggered
+    {
+        get
+        {
+            return isTriggered;
+        }
+    }
+
+    public String Location
+    {
+        get
+        {
+            return location;
+        }
+        set
+        {
+            location = value;
+        }
+    }
+
+    public int ParentId
+    {
+        get
+        {
+            return parentId;
+        }
+        set
+        {
+            parentId = value;
         }
     }
 

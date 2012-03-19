@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Mes
 {
-    interface System
+    public interface System
     {
         //Add Stuff. Not Sure as to what to add here yet...
+        void Run();
     }
 }

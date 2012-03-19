@@ -1,7 +1,0 @@
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\bin\Debug\SensorSim.exe
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\bin\Debug\SensorSim.pdb
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\bin\Debug\Mes.exe
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\bin\Debug\Mes.pdb
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\obj\x86\Debug\SensorSim.exe
-C:\Users\Peter\Mesmerize-One-Prime-X2\Mes\SensorSim\obj\x86\Debug\SensorSim.pdb

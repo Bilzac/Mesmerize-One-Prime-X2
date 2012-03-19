@@ -26,6 +26,17 @@ namespace Mes
 
         public SecuritySystem()
         {
+            createMessageQueue();
+        }
+
+        public SecuritySystem(int identification)
+        {
+            createMessageQueue();
+            id = identification;
+        }
+
+        public void createMessageQueue()
+        {
             if (MessageQueue.Exists(queueName))
                 queue = new MessageQueue(queueName);
             else
