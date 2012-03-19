@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Messaging;
+using System.Collections;
+using System.Threading;
 namespace SensorSim
 {
     // A sensor extended to run as a thread and receive messages in a simulation
@@ -50,21 +52,23 @@ namespace SensorSim
 
         // Send a message to the central system with component configuration.
         // Retrieve an Id to save into the sensor
-        static public void SimulatorAddSensor(List<Mes.Sensor> inList)
+        static public SimSensor SimulatorAddSensor(ArrayList inList, int sensorCount)
         {
-            Mes.SensorMessage sensorMessage = new Mes.SensorMessage();
-            sensorMessage.messageType = (int)Actions.Add;
+            
+            SimSensor simSensor = new SimSensor(sensorCount);
+            Message message = new Message(simSensor);
+            message.Label = "add";
             if (MessageQueue.Exists(queueName))
             {
                 MessageQueue queue = new MessageQueue(queueName);
-                Message message = new Message(sensorMessage);
-                message.
+                
                 queue.Send(message);
             }
             else
             {
                 Console.WriteLine("Terminal - Queue .\\security not Found");
             }
+            return simSensor;
         }
 
         // Send a message to the central system to request component configuration for sensor of Id.
@@ -90,11 +94,14 @@ namespace SensorSim
             Console.WriteLine("Sensor Simulation for Mesmerize One Prime X2");
 
             // instantiate objects
-            List<Mes.Sensor> realSensors = new List<Mes.Sensor>();
+            ArrayList realSensors = new ArrayList();
             List<Mes.Monitor> realMonitors = new List<Mes.Monitor>();
             List<Mes.Alarm> realAlarms = new List<Mes.Alarm>();
             Mes.SensorMessage sensorMessage = new Mes.SensorMessage();
-
+            Hashtable threads = new Hashtable();
+            int sensorCount = 0;
+            int alarmCount = 0;
+            int monitorCount = 0;
             while (true)
             {
                 Console.WriteLine("Enter a command:");
@@ -108,7 +115,10 @@ namespace SensorSim
                         inText = Console.ReadLine().ToUpper();
                         if (inText.Equals("S"))
                         {
-                            SimulatorAddSensor(realSensors);
+                            Mes.SensorMessage msg = new Mes.SensorMessage();
+
+                            MessageQueue queue = new MessageQueue(queueName);
+                            queue.Send(msg);
                         }
                         else if (inText.Equals("M"))
                         {
@@ -122,8 +132,6 @@ namespace SensorSim
                         }
                         break;
                     case "EDIT":
-                        break;
-                    case "CONFIG":
                         Console.WriteLine("Edit Sensor:");
                         break;
                     case "TRIGGER":
