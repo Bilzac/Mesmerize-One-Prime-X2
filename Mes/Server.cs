@@ -138,7 +138,6 @@ namespace Mes
             mesDB = new DB_Manager();
             systemThreads = new List<Thread>();
 
-            
             mesDB.setConnection();
             mesDB.createCredentialsTable();
             mesDB.createSystemTable();
@@ -150,7 +149,7 @@ namespace Mes
             if (systemList.Count == 0)
             {
                 AddSecuritySystem();
-            }            
+            }
         }
 
         public void Run()
@@ -187,7 +186,6 @@ namespace Mes
                 Thread securitySystemThread = new Thread(new ThreadStart(securitySystem.Run));
                 securitySystemThread.Start();
             }
-            
         }
 
         public void startSystems()
@@ -198,6 +196,5 @@ namespace Mes
                 systemThreads[i].Start();
             }
         }
-
     }
 }

@@ -63,6 +63,7 @@
     <Compile Include="Concrete\VideoCamera.cs" />
     <Compile Include="Start.cs" />
     <Compile Include="GenericSystem.cs" />
+    <Compile Include="TestHarness.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
