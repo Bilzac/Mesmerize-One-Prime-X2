@@ -84,6 +84,7 @@ namespace Mes
             Console.WriteLine("Welcome to Mesmerize One Prime X2");
             Console.WriteLine("");
             Console.WriteLine("Valid commands are:");
+            Console.WriteLine("     LOGOUT");
             Console.WriteLine("     ADDUSER");
             Console.WriteLine("     CHANGEPASS");
             Console.WriteLine("     ADD");
@@ -145,6 +146,7 @@ namespace Mes
                         Console.WriteLine("Welcome to Mesmerize One Prime X2");
                         Console.WriteLine("");
                         Console.WriteLine("Valid commands are:");
+                        Console.WriteLine("     LOGOUT");
                         Console.WriteLine("     ADDUSER");
                         Console.WriteLine("     CHANGEPASS");
                         Console.WriteLine("     ADD");
@@ -513,6 +515,7 @@ namespace Mes
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         terminalLog.appendLog("Invalid Command Entered: " + command);
                         Console.WriteLine("Valid commands are:");
+                        Console.WriteLine("     LOGOUT");
                         Console.WriteLine("     ADDUSER");
                         Console.WriteLine("     CHANGEPASS");
                         Console.WriteLine("     ADD");

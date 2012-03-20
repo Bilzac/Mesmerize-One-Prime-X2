@@ -12,6 +12,7 @@ namespace Mes
             // Starts the execution of the server
             Server server = new Server();
             server.Run();
+            Console.WriteLine("It is now safe to close your terminal.");
         }
     }
 }
