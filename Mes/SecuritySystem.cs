@@ -204,6 +204,87 @@ namespace Mes
                             case ("VIEW"):
                                 break;
                             case ("EDIT"):
+                                int index = -1;
+                                int i = 0;
+                                tmpParams = GetParams(mesMessage);
+                                deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
+                                deviceType = tmpParams.ElementAt(2);
+                                enableParam = tmpParams.ElementAt(3);
+                                if (enableParam == "true") {
+                                    isEnable = true;
+                                } else {
+                                    isEnable = false;
+                                }
+                                threshold = Convert.ToInt16(tmpParams.ElementAt(4));
+                                location = tmpParams.ElementAt(5);
+
+                                switch (deviceCategory) {
+                                    case "SENSOR":
+                                        foreach (Sensor tmpSensor in sensors)
+                                        {
+                                            if (tmpSensor.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            sensors.ElementAt(index).Location = location;
+                                            //sensors.ElementAt(index).isEnabled = isEnable;
+                                            //sensors.ElementAt(index).Threshold = threshold;
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to add sensor");
+                                        }
+                                        //Send sensors.ElementAt(Index) object to DB Manager
+                                        break;
+                                    case "ALARM":
+                                        /*foreach (Alarm tmpAlarm in alarms)
+                                        {
+                                            if (tmpAlarm.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            //alarms.ElementAt(index).Location = location;
+                                            //alarms.ElementAt(index).isEnabled = isEnable;
+                                            //alarms.ElementAt(index).Threshold = threshold;
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to add sensor");
+                                        }
+                                        //Send alarms.ElementAt(Index) object to DB Manager
+                                         * */
+                                        break;
+                                    case "MONITOR":
+                                        /*foreach (Monitor tmpMonitor in monitors)
+                                        {
+                                            if (tmpMonitor.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            monitors.ElementAt(index).Location = location;
+                                            //monitors.ElementAt(index).isEnabled = isEnable;
+                                            //monitors.ElementAt(index).Threshold = threshold;
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to add sensor");
+                                        }
+                                        //Send monitors.ElementAt(Index) object to DB Manager
+                                         * */
+                                        break;
+                                    default:
+                                        break;
+                                }
                                 break;
                             case ("REMOVE"):
                                 break;
