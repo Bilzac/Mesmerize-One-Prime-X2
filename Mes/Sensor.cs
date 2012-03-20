@@ -155,8 +155,7 @@ namespace Mes{
             {
                 sensorId = value;
             }
-        }
-
+        } 
         public bool IsEnabled
         {
             get

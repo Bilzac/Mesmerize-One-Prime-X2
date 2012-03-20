@@ -25,6 +25,7 @@ namespace Mes
         List<Sensor> sensors = new List<Sensor>();
         List<Alarm> alarms = new List<Alarm>();
         List<Monitor> monitors = new List<Monitor>();
+        DB_Manager mesDB = new DB_Manager();
 
         private int id;
 
@@ -56,6 +57,9 @@ namespace Mes
 
         public void Run()
         {
+
+            mesDB.setConnection();
+
             while(true)
             {
                 if (MessageQueue.Exists(queueName))
@@ -66,6 +70,7 @@ namespace Mes
                     {
                         Message msg = queue.Receive();
                         MesMessage mesMessage = (MesMessage)msg.Body;
+                        Console.WriteLine("Message Received!");
 
                         int deviceId;
                         string deviceCategory;
@@ -86,18 +91,19 @@ namespace Mes
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
                                 deviceType = tmpParams.ElementAt(2);
                                 enableParam = tmpParams.ElementAt(3);
-                                if (enableParam == "true") {
+                                if (enableParam == "TRUE") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
                                 }
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
                                 location = tmpParams.ElementAt(5);
+                                Console.WriteLine("Decoded Add Message!");
 
-                                switch (deviceCategory) {
+                                switch (deviceType) {
                                     case "SENSOR":
                                         Sensor sensor = null;
-                                        switch (deviceType)
+                                        switch (deviceCategory)
                                         {
                                             case "MAGNETIC":
                                                 sensor = new MagneticSensor();
@@ -106,6 +112,7 @@ namespace Mes
                                             case "MOTION":
                                                 sensor = new MotionSensor();
                                                 sensor.Type = "MOTION";
+                                                Console.WriteLine("Adding Motion Sensor!");
                                                 break;
                                             case "FLOOD":
                                                 sensor = new FloodSensor();
@@ -115,37 +122,35 @@ namespace Mes
                                                 sensor = new SmokeSensor();
                                                 sensor.Type = "SMOKE";
                                                 break;
+                                            default:
+                                                break;
                                         }
-                                        sensor.Id = deviceId;
                                         sensor.Location = location;
                                         sensor.IsEnabled = isEnable;
-                                        sensor.ParentId = id;
-                                        //threshold definition 
-                                        //Add to DB
-                                        //Store into List<device>
+                                        sensor.ParentId = 1;
+                                        sensor.Threshold = threshold;
+                                        sensor.Id = mesDB.AddSensor(sensor);
+                                        sensors.Add(sensor);
+                                        Console.WriteLine("Added Sensor successfully!");
                                         break;
                                     case "ALARM":
                                         Alarm alarm = null;
                                         switch (deviceType)
                                         {
                                             case "LIGHT":
-                                                /*
                                                 alarm = new LightAlarm();
                                                 alarm.Type = "LIGHT";
                                                 alarm.Id = deviceId;
-                                                 * */
                                                 break;
                                             case "SIREN":
-                                                /*
                                                 alarm = new SirenAlarm();
                                                 alarm.Type = "SIREN";
-                                                 * */
                                                 break;
                                         }
-                                        //alarm.Location = location;
-                                        //alarm.IsEnabled = isEnable;
-                                        //alarm.ParentId = id;
-                                        //threshold definition
+                                        alarm.Location = location;
+                                        alarm.IsEnabled = isEnable;
+                                        alarm.ParentId = id;
+                                        alarm.Sensitivity = threshold;
                                         //Add to DB
                                         //Store into List<device>
                                         break;
@@ -154,16 +159,14 @@ namespace Mes
                                         switch (deviceType)
                                         {
                                             case "MOTION":
-                                                /*
                                                 monitor = new VideoCamera();
                                                 monitor.Type = "VIDEO";
-                                                 * */
                                                 break;
                                         }
-                                        //monitor.Id = deviceId;
-                                        //monitor.IsEnabled = isEnable;
-                                        //monitor.ParentId = id;
-                                        //monitor.Location = location;
+                                        monitor.Id = deviceId;
+                                        monitor.IsEnabled = isEnable;
+                                        monitor.ParentId = id;
+                                        monitor.Location = location;
                                         //threshold
                                         //Add to DB
                                         //Store into List<device>
@@ -189,7 +192,7 @@ namespace Mes
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
                                 location = tmpParams.ElementAt(5);
 
-                                switch (deviceCategory) {
+                                switch (deviceType) {
                                     case "SENSOR":
                                         foreach (Sensor tmpSensor in sensors)
                                         {
@@ -201,17 +204,24 @@ namespace Mes
                                         if (index >= 0)
                                         {
                                             sensors.ElementAt(index).Location = location;
-                                            //sensors.ElementAt(index).isEnabled = isEnable;
-                                            //sensors.ElementAt(index).Threshold = threshold;
+                                            sensors.ElementAt(index).IsEnabled = isEnable;
+                                            sensors.ElementAt(index).Threshold = threshold;
+                                            if (mesDB.EditSensor(sensors.ElementAt(index)))
+                                            {
+                                                securityLogger.appendLog("Successfully added sensor.");
+                                            }
+                                            else
+                                            {
+                                                securityLogger.appendLog("Failed to add sensor!");
+                                            }
                                         }
                                         else
                                         {
-                                            securityLogger.appendLog("Failed to add sensor");
+                                            securityLogger.appendLog("Failed to add sensor!");
                                         }
-                                        //Send sensors.ElementAt(Index) object to DB Manager
                                         break;
                                     case "ALARM":
-                                        /*foreach (Alarm tmpAlarm in alarms)
+                                        foreach (Alarm tmpAlarm in alarms)
                                         {
                                             if (tmpAlarm.Id == deviceId) {
                                                 index = i;
@@ -220,19 +230,18 @@ namespace Mes
                                         }
                                         if (index >= 0)
                                         {
-                                            //alarms.ElementAt(index).Location = location;
-                                            //alarms.ElementAt(index).isEnabled = isEnable;
-                                            //alarms.ElementAt(index).Threshold = threshold;
+                                            alarms.ElementAt(index).Location = location;
+                                            alarms.ElementAt(index).IsEnabled = isEnable;
+                                            alarms.ElementAt(index).Sensitivity = threshold;
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to add alarm");
                                         }
                                         //Send alarms.ElementAt(Index) object to DB Manager
-                                         * */
                                         break;
                                     case "MONITOR":
-                                        /*foreach (Monitor tmpMonitor in monitors)
+                                        foreach (Monitor tmpMonitor in monitors)
                                         {
                                             if (tmpMonitor.Id == deviceId) {
                                                 index = i;
@@ -242,7 +251,7 @@ namespace Mes
                                         if (index >= 0)
                                         {
                                             monitors.ElementAt(index).Location = location;
-                                            //monitors.ElementAt(index).isEnabled = isEnable;
+                                            monitors.ElementAt(index).IsEnabled = isEnable;
                                             //monitors.ElementAt(index).Threshold = threshold;
                                         }
                                         else
@@ -250,7 +259,6 @@ namespace Mes
                                             securityLogger.appendLog("Failed to add monitor");
                                         }
                                         //Send monitors.ElementAt(Index) object to DB Manager
-                                         * */
                                         break;
                                     default:
                                         break;
@@ -270,7 +278,7 @@ namespace Mes
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
                                 location = tmpParams.ElementAt(5);
 
-                                switch (deviceCategory) {
+                                switch (deviceType) {
                                     case "SENSOR":
                                         foreach (Sensor tmpSensor in sensors)
                                         {
@@ -281,7 +289,7 @@ namespace Mes
                                         }
                                         if (index >= 0)
                                         {
-                                            //Remove from DB send sensors.ElementAt(index).id;
+                                            mesDB.removeSensor(sensors.ElementAt(index).Id);
                                             sensors.RemoveAt(index);
                                         }
                                         else

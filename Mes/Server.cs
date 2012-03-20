@@ -75,41 +75,88 @@ namespace Mes
             while (online)
             {
                 String command = Console.ReadLine();
+                string deviceType = null;
+                string deviceCategory = null;
+                string isEnable = null;
+                string threshold = null;
+                string location = null;
+                string deviceId = null;
 
                 switch (command.ToUpper())
                 {
-                    case "ADDSENSOR":
-                        Console.WriteLine("Add Sensor:");
+                    case "ADD":
+                        Console.WriteLine("Add Device:");
                         if (MessageQueue.Exists(queueName))
                         {
-                            terminalLog.appendLog("Add Sensor Command Executed");
-                            queue.Send("Add Sensor message","Label");
+                            // "id,deviceType(magnetic),category(sensor),enable,threshold,location"
+                            terminalLog.appendLog("Add Sensor Command Executed.");
+                            mesMsg.type = "ADD";
+                            Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                            deviceCategory = Console.ReadLine();
+                            Console.WriteLine("Please enter the type of the device.(MAGNETIC|MOTION|FLOOD|SMOKE|LIGHT|SIREN|VIDEO)");
+                            deviceType = Console.ReadLine();
+                            Console.WriteLine("Please enter the if the device should be enabled.(TRUE|FALSE)");
+                            isEnable = Console.ReadLine();
+                            Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
+                            threshold = Console.ReadLine();
+                            Console.WriteLine("Please enter the location of the device.");
+                            location = Console.ReadLine();
+                            mesMsg.message = "0," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;
+                            queue.Send(mesMsg);
                         }
                         else
                         {
                             Console.WriteLine("Terminal - Queue .\\security not Found");
                         }
                         break;
-                    case "EDITSENSOR":
-                        Console.WriteLine("Edit Sensor:");
+                    case "EDIT":
+                        Console.WriteLine("Edit Device:");
                         terminalLog.appendLog("Edit Sensor Command Executed");
+                        mesMsg.type = "EDIT";
+                        Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                        deviceCategory = Console.ReadLine();
+                        Console.WriteLine("Please enter the id of the device");
+                        deviceId = Console.ReadLine();
+                        Console.WriteLine("Please enter the if the device should be enabled.(TRUE|FALSE)");
+                        isEnable = Console.ReadLine();
+                        Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
+                        threshold = Console.ReadLine();
+                        Console.WriteLine("Please enter the location of the device.");
+                        location = Console.ReadLine();
+                        mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;
+                        queue.Send(mesMsg);
                         break;
-                    case "REMOVESENSOR":
-                        Console.WriteLine("Remove Sensor:");
+                    case "REMOVE":
+                        Console.WriteLine("Remove Device:");
                         terminalLog.appendLog("Remove Sensor Command Executed");
+                        mesMsg.type = "REMOVE";
+                        Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                        deviceCategory = Console.ReadLine();
+                        Console.WriteLine("Please enter the id of the device");
+                        deviceId = Console.ReadLine();
+                        mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
+                        queue.Send(mesMsg);
                         break;
-                    case "VIEWSENSORS":
-                        Console.WriteLine("Viewing Sensor");
+                    case "VIEW":
+                        Console.WriteLine("Viewing Devices");
                         terminalLog.appendLog("View Sensor Command Executed");
                         break;
                     case "TEST":
                         Console.WriteLine("Please specify the file path to the test file.");
                         terminalLog.appendLog("Executing Test Simulation of Security System");
                         terminalTest.File = Console.ReadLine();
-                        foreach (string cmd in terminalTest.getCommands()) {    
-                            mesMsg.type = "LOG";
-                            mesMsg.message = cmd;
-                            queue.Send(mesMsg);     
+                        if (MessageQueue.Exists(queueName))
+                        {
+                            foreach (string cmd in terminalTest.getCommands())
+                            {
+                                mesMsg.type = "LOG";
+                                mesMsg.message = cmd;
+                                queue.Send(mesMsg);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Terminal - Queue .\\security not Found");
                         }
                         break;
                     case "EXIT":
