@@ -54,6 +54,7 @@ namespace Mes
             {
                 if (MessageQueue.Exists(queueName))
                 {
+                    //REDO QUEUE MESSAGE FORMAT
                     queue = new MessageQueue(queueName);
                     //queue.Formatter = new XmlMessageFormatter(new string[] { "System.String" });
                     queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(MesMessage) });
@@ -66,13 +67,35 @@ namespace Mes
                         Message message = queue.Receive();
                         string testMessage = (string)message.Body;
                         msgLogger.appendLog(testMessage);
+                        
+                        //--------------------------------Temporary Implementation---------------------------------
+                        Message msg = queue.Receive();
+                        string mesMessage = (MesMessage)message.Body;
+
+                        switch (mesMessage.Type)
+                        {
+                            case ("ADD"):
+                                break;
+                            case ("VIEW"):
+                                break;
+                            case ("EDIT"):
+                                break;
+                            case ("REMOVE"):
+                                break;
+                            case ("LOG"):
+                                break;
+                            case ("TRIGGER"):
+                                break;
+                            case default:
+                                break;
+                        }
                     }
 
                     catch (MessageQueueException)
                     {
                         // Handle Message Queuing exceptions.
                     }
-
+                    
                     // Handle invalid serialization format.
                     catch (InvalidOperationException e)
                     {
