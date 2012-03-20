@@ -5,12 +5,13 @@ namespace Mes
 {
     abstract public class Monitor
     {
-        bool isEnabled;
-        bool isTriggered;
-        string location;
-        string type;
-        int id;
-        int parentId;
+        bool isEnabled;             // The monitor can be triggered
+        bool isTriggered;           // Triggered state indicates the monitor starts to monitor.
+        string location;            // what room is the component in
+        string type;                // Is this a video camera or infrared camera etc.?
+        int id;                     // unique ID of the object instance
+        int parentId;               // refers to the parent system (default security)
+        int monitorValue;           // A value used for a monitor
 
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;
@@ -159,6 +160,12 @@ namespace Mes
         {
             get { return parentId; }
             set { parentId = value; }
+        }
+
+        public int MonitorValue
+        {
+            get { return monitorValue; }
+            set { monitorValue = value; }
         }
     }
 }

@@ -285,7 +285,7 @@ namespace Mes
                                     default:
                                         break;
                                 }
-                                break;
+                                break;  // EDIT
                             case ("REMOVE"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -365,9 +365,70 @@ namespace Mes
 
                                 break;
                             case ("TRIGGER"):
+                                tmpParams = GetParams(mesMessage);
+                                deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
+                                deviceType = tmpParams.ElementAt(2);
+                                enableParam = tmpParams.ElementAt(3);
+                                if (enableParam == "true") {
+                                    isEnable = true;
+                                } else {
+                                    isEnable = false;
+                                }
+                                threshold = Convert.ToInt16(tmpParams.ElementAt(4));
+                                location = tmpParams.ElementAt(5);
 
+                                switch (deviceCategory) {
+                                    case "SENSOR":
+                                        foreach (Sensor tmpSensor in sensors)
+                                        {
+                                            if (tmpSensor.Id == deviceId) {
+                                                tmpSensor.Trigger();
+                                                index=i;
+                                                break;
+                                            }
+                                            i++;
+                                        }
+                                        break;
+                                    case "ALARM":
+                                        foreach (Alarm tmpAlarm in alarms)
+                                        {
+                                            if (deviceId.Equals(null) && tmpAlarm.Location == location){
+                                                tmpAlarm.Trigger();     // Trigger all alarms in the location of a tripped sensor
+                                            }
+                                            else if (tmpAlarm.Id == deviceId) {
+                                                tmpAlarm.Trigger();
+                                                index = i;
+                                                break;
+                                            }
+                                            i++;
+                                        }
+                                        break;
+                                    case "MONITOR":
+                                        foreach (Monitor tmpMonitor in monitors)
+                                        {
+                                            if (tmpMonitor.Id == deviceId) {
+                                                tmpMonitor.Trigger();
+                                                index = i;
+                                                break;
+                                            }
+                                            i++;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                if (index >= 0)
+                                {
+                                    // do nothing, this is an error check. If the node wasn't found
+                                    // then index was never set, thus the deviceId is not valid or null
+                                }
+                                else
+                                {
+                                    securityLogger.appendLog(string.Format("Failed to add {0}", deviceCategory));
+                                }
                                 break;
-                            default:
+                            default:    // Not a any of the actions add, edit, view, trigger, etc. Error.
                                 break;
                         }
                     }
