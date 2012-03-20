@@ -31,7 +31,7 @@ namespace Mes
             try
             { 
                 sqlConnection.Open();
-                sqlCmd.CommandText = "SELECT type FROM Credentials WHERE username=\"" + username + "\" AND password=\"" + password + "\""; //Check if any admin credentials exist.
+                sqlCmd.CommandText = "SELECT usertype FROM Credentials WHERE username=\"" + username + "\" AND password=\"" + password + "\""; //Check if any admin credentials exist.
                 MySqlDataReader rdr = sqlCmd.ExecuteReader();
                 if (rdr.Read())
                 {
@@ -62,18 +62,73 @@ namespace Mes
                 sqlConnection.Open();
 
                 sqlCmd.CommandText = "Create Table IF NOT EXISTS " +
-                                        "Credentials ( username varchar(255) NOT NULL, password varchar(255) NOT NULL, type int NOT NULL , PRIMARY KEY(username) )";
+                                        "Credentials ( username varchar(255) NOT NULL UNIQUE, password varchar(255) NOT NULL, usertype int NOT NULL , PRIMARY KEY(username) )";
                 sqlCmd.ExecuteNonQuery();
-                sqlCmd.CommandText = "SELECT count(username) FROM Credentials WHERE type=1"; //Check if any admin credentials exist.
+                sqlCmd.CommandText = "SELECT count(username) FROM Credentials WHERE usertype=1"; //Check if any admin credentials exist.
                 MySqlDataReader rdr = sqlCmd.ExecuteReader();
                 if(rdr.Read())
                 {
                     if (rdr.GetInt32(0) == 0)
                     {
-                        sqlCmd.CommandText = "INSERT INTO CREDENTIALS (username, password, type) VALUES (\"admin\",\"adminpass\",1)";
+                        sqlCmd.CommandText = "INSERT INTO CREDENTIALS (username, password, usertype) VALUES (\"admin\",\"adminpass\",1)";
                     }
                 }
                 rdr.Close();
+                sqlCmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return false;
+        }
+
+        public bool AddUser(string username, string password, int type)
+        {
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+                sqlConnection.Open();
+
+                sqlCmd.CommandText = "INSERT INTO " +
+                                  "CREDENTIALS ( USERNAME, PASSWORD, USERTYPE ) " +
+                                  "VALUES ( \"" + username + "\", \"" + password + "\", " + type + ")";
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return true;
+        }
+
+        public bool ChangePassword(string username,string password)
+        {
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+                sqlConnection.Open();
+
+                sqlCmd.CommandText = "UPDATE CREDENTIALS " +
+                        "SET PASSWORD=\"" + password + "\" " +
+                        "WHERE USERNAME=\"" + username +"\"";
                 sqlCmd.ExecuteNonQuery();
                 return true;
             }
@@ -381,7 +436,9 @@ namespace Mes
                 {
                     if (rdr.GetInt32(1) == 1)
                     {
-                        systemList.Add(new SecuritySystem(rdr.GetInt32(0)));
+                        SecuritySystem system = new SecuritySystem(rdr.GetInt32(0));
+                        system.Sensors = GetSensors(system.Id);
+                        systemList.Add(system);
                     }
                 }
                 rdr.Close();

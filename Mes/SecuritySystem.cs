@@ -516,5 +516,17 @@ namespace Mes
             }
 		  
         }
+
+        public List<Sensor> Sensors
+        {
+            get
+            {
+                return sensors;
+            }
+            set
+            {
+                sensors = value;
+            }
+        }
     }
 }

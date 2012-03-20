@@ -19,6 +19,9 @@ namespace Mes
         Logger terminalLog;
         TestHarness terminalTest;
 
+        String activeUserName;
+        String activePassword;
+
         public void startTerminal()
         {
             online = true;
@@ -53,10 +56,10 @@ namespace Mes
             while (authentication == -1)
             {
                 Console.WriteLine("Please Enter Your Username");
-                String username = Console.ReadLine();
+                activeUserName = Console.ReadLine();
                 Console.WriteLine("Please Enter Your Password");
-                String password = Console.ReadLine();
-                authentication = mesDB.CheckAuthentication(username, password);
+                activePassword = Console.ReadLine();
+                authentication = mesDB.CheckAuthentication(activeUserName, activePassword);
                 if (authentication == -1)
                 {
                     Console.WriteLine("Incorrect Credentials Please Try Again!");
@@ -93,6 +96,37 @@ namespace Mes
 
                 switch (command.ToUpper())
                 {
+                    case "CHANGEPASS":
+                            Console.WriteLine("Enter Your Password");
+                            string oldPass = Console.ReadLine();
+                            if (oldPass.Equals(activePassword))
+                            {
+                                Console.WriteLine("Enter New Password");
+                                string password = Console.ReadLine();
+                                mesDB.ChangePassword(activeUserName, password);
+                                Console.WriteLine("Password Changed");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Incorrect Password");
+                            }
+                        break;
+                    case "ADDUSER":
+                        if (authentication == 1)
+                        {
+                            Console.WriteLine("[New User] Please Enter Username");
+                            string username = Console.ReadLine();
+                            Console.WriteLine("[New User] Please Enter Password");
+                            string password = Console.ReadLine();
+                            Console.WriteLine("[New User] Please Enter Type");
+                            int type = Convert.ToInt16(Console.ReadLine());
+                            mesDB.AddUser(username, password, type);
+                        }
+                        else
+                        {
+                            Console.WriteLine("You do not have permissions to add users");
+                        }
+                        break;
                     case "ADD":
                         Console.WriteLine("Add Device:");
                         if (MessageQueue.Exists(queueName))
