@@ -21,6 +21,8 @@ namespace Mes
 
     class SecuritySystem : GenericSystem
     {
+        //Messsage Queue, Logging, and Database Connections
+        //Store of Virtual Device Objects
         MessageQueue queue = null;
         string queueName = @".\Private$\security";
         Logger securityLogger = new Logger();
@@ -29,14 +31,17 @@ namespace Mes
         List<Monitor> monitors = new List<Monitor>();
         DB_Manager mesDB = new DB_Manager();
 
+        //System Identification and Threads
         private int id;
         private List<Thread> simulationThreads = new List<Thread>();
 
+        //Initialize the Security System
         public SecuritySystem()
         {
             createMessageQueue();
         }
 
+        //Generate the correct Security System if it has a valid Id.
         public SecuritySystem(int identification)
         {
             createMessageQueue();
@@ -44,6 +49,7 @@ namespace Mes
             queue.Purge();
         }
 
+        //Generation of the Messsage Queue to be used to receive and decode messages
         public void createMessageQueue()
         {
             if (MessageQueue.Exists(queueName))
@@ -58,6 +64,7 @@ namespace Mes
             }
         }
 
+        //Run Instance of the Security System.  This is to receive messages periodically and process them.
         public void Run()
         {
 
@@ -65,8 +72,10 @@ namespace Mes
 
             while(true)
             {
+                //Check for non-empty Message Queue
                 if (MessageQueue.Exists(queueName))
                 {
+                    //Retrieve Message
                     queue = new MessageQueue(queueName);
                     queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(MesMessage) });
                     try

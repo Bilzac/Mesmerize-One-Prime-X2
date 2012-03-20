@@ -118,6 +118,51 @@ namespace Mes
                 //Command Decoder
                 switch (command.ToUpper())
                 {
+                    case "LOGOUT":
+                        //User Login Verification
+                        Console.WriteLine("You have successfully logged out!");
+                        authentication = -1;
+                        while (authentication == -1)
+                        {
+                            Console.WriteLine("Please Enter Your Username");
+                            activeUserName = Console.ReadLine();
+                            Console.WriteLine("Please Enter Your Password");
+                            activePassword = Console.ReadLine();
+                            authentication = mesDB.CheckAuthentication(activeUserName, activePassword);
+                            if (authentication == -1)
+                            {
+                                Console.WriteLine("Incorrect Credentials Please Try Again!");
+                                terminalLog.appendLog("Warning invalid credentials were entered!");
+                            }
+                        }
+                        //Terminal Startup
+                        terminalLog.appendLog("Connection to the server has been established.");
+                        Console.WriteLine("------------_________---------------");
+                        Console.WriteLine("------------|       |---------------");
+                        Console.WriteLine("---*CLICK*--________|---------------");
+                        Console.WriteLine("------------|       |---------------");
+                        Console.WriteLine("------------|   O   |---------------");
+                        Console.WriteLine("------------|_______|---------------");
+                        Console.WriteLine("Welcome to Mesmerize One Prime X2");
+                        Console.WriteLine("");
+                        Console.WriteLine("Valid commands are:");
+                        Console.WriteLine("     ADDUSER");
+                        Console.WriteLine("     CHANGEPASS");
+                        Console.WriteLine("     ADD");
+                        Console.WriteLine("     REMOVE");
+                        Console.WriteLine("     EDIT");
+                        Console.WriteLine("     VIEW");
+                        Console.WriteLine("     TEST");
+                        Console.WriteLine("     STATUS");
+                        Console.WriteLine("     ARM");
+                        Console.WriteLine("     DISARM");
+                        Console.WriteLine("     UNTRIGGER");
+                        Console.WriteLine("     ENABLESIM");
+                        Console.WriteLine("     DISABLESIM");
+                        Console.WriteLine("     CHANGEREADING");
+                        Console.WriteLine("     EXIT");
+                        Console.WriteLine("");
+                        break;
                     case "CHANGEPASS":
                         //-----------------------------------------------------------------------------------
                         //Change Pass Command
