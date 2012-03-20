@@ -54,21 +54,10 @@ namespace Mes
             {
                 if (MessageQueue.Exists(queueName))
                 {
-                    //REDO QUEUE MESSAGE FORMAT
                     queue = new MessageQueue(queueName);
-                    //queue.Formatter = new XmlMessageFormatter(new string[] { "System.String" });
                     queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(MesMessage) });
                     try
                     {
-                        // Receive and format the message.
-                        //SensorMessage sensorMessage = (SensorMessage)queue.Receive().Body;
-                        // msgLogger.appendLog(msgLogger.formatSensorMessage(sensorMessage));
-                        //Console.WriteLine("Received: {0} {1}", sensorMessage.sensorId, sensorMessage.messageType);
-                        Message message = queue.Receive();
-                        string testMessage = (string)message.Body;
-                        msgLogger.appendLog(testMessage);
-                        
-                        //--------------------------------Temporary Implementation---------------------------------
                         Message msg = queue.Receive();
                         string mesMessage = (MesMessage)message.Body;
 
@@ -86,7 +75,7 @@ namespace Mes
                                 break;
                             case ("TRIGGER"):
                                 break;
-                            case default:
+                            default:
                                 break;
                         }
                     }
