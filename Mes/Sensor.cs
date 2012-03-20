@@ -109,7 +109,7 @@ namespace Mes{
 
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
-                    message.type = "log";
+                    message.type = "LOG";
                     message.message = string.Format("{0} Sensor {1} was enabled.", this.Type, this.Id);
                     queue.Send(message);
                 }
@@ -134,7 +134,7 @@ namespace Mes{
 
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
-                    message.type = "log";
+                    message.type = "LOG";
                     message.message = string.Format("{0} Sensor {1} was disabled.", this.Type, this.Id);
                     queue.Send(message);
                 }
@@ -193,7 +193,7 @@ namespace Mes{
 
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
-                    message.type = "log";
+                    message.type = "LOG";
                     message.message = string.Format("{0} Sensor {1} was untriggered.", this.Type, this.Id);
                     queue.Send(message);
                 }
