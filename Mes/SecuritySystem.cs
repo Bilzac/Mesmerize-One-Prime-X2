@@ -20,7 +20,6 @@ namespace Mes
     class SecuritySystem : GenericSystem
     {
         MessageQueue queue = null;
-        Message message = null;
         string queueName = @".\Private$\security";
         Logger securityLogger = new Logger();
         List<Sensor> sensors = new List<Sensor>();
@@ -65,7 +64,7 @@ namespace Mes
                     try
                     {
                         Message msg = queue.Receive();
-                        MesMessage mesMessage = (MesMessage)message.Body;
+                        MesMessage mesMessage = (MesMessage)msg.Body;
 
                         int deviceId;
                         string deviceCategory;

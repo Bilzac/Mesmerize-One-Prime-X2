@@ -92,12 +92,6 @@ namespace Mes
                     message.type = "log";
                     message.message = string.Format("{0} Alarm {1} was triggered.", this.Type, this.Id);
                     queue.Send(message);
-
-                    // Send a message to the security system to trigger all alarms in the same location.
-                    message = new Mes.MesMessage();
-                    message.type = "trigger";
-                    message.message = string.Format(",,alarm,true,,{0}", this.Location);
-                    queue.Send(message);
                 }
                 else
                 {
