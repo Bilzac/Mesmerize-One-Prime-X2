@@ -43,7 +43,7 @@ namespace Mes
         {
             terminalLog = new Logger();
             mesDB = new DB_Manager();
-            mesDB.setConnection();
+            mesDB.SetConnection();
             terminalTest = new TestHarness();
             Console.WriteLine("Intializing Security Server.");
             terminalLog.appendLog("Security Server Initializating");
@@ -56,7 +56,7 @@ namespace Mes
                 String username = Console.ReadLine();
                 Console.WriteLine("Please Enter Your Password");
                 String password = Console.ReadLine();
-                authentication = mesDB.checkAuthentication(username, password);
+                authentication = mesDB.CheckAuthentication(username, password);
                 if (authentication == -1)
                 {
                     Console.WriteLine("Incorrect Credentials Please Try Again!");
@@ -189,14 +189,14 @@ namespace Mes
             mesDB = new DB_Manager();
             systemThreads = new List<Thread>();
 
-            mesDB.setConnection();
-            mesDB.createCredentialsTable();
-            mesDB.createSystemTable();
-            mesDB.createSensorTable();
-            mesDB.createMonitorTable();
-            mesDB.createAlarmTable();
+            mesDB.SetConnection();
+            mesDB.CreateCredentialsTable();
+            mesDB.CreateSystemTable();
+            mesDB.CreateSensorTable();
+            mesDB.CreateMonitorTable();
+            mesDB.CreateAlarmTable();
 
-            systemList = mesDB.getSystems();
+            systemList = mesDB.GetSystems();
             if (systemList.Count == 0)
             {
                 AddSecuritySystem();
@@ -229,7 +229,7 @@ namespace Mes
         public void AddSecuritySystem()
         {
             SecuritySystem securitySystem = new SecuritySystem();
-            int id = mesDB.addSystem(1);
+            int id = mesDB.AddSystem(1);
             if (id > 0)
             {
                 securitySystem.Id = id;

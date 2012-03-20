@@ -58,7 +58,7 @@ namespace Mes
         public void Run()
         {
 
-            mesDB.setConnection();
+            mesDB.SetConnection();
 
             while(true)
             {
@@ -289,7 +289,7 @@ namespace Mes
                                         }
                                         if (index >= 0)
                                         {
-                                            mesDB.removeSensor(sensors.ElementAt(index).Id);
+                                            mesDB.RemoveSensor(sensors.ElementAt(index).Id);
                                             sensors.RemoveAt(index);
                                         }
                                         else

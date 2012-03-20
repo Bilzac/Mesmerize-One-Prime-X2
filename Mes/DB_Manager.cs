@@ -15,13 +15,13 @@ namespace Mes
         string user = "root";
         string password = null;
 
-        public void setConnection()
+        public void SetConnection()
         {
             connectionString = string.Format("Server={0};Database={1};UID={2};Password={3}", server, database, user, password);
         }
 
         //*******************************Authentication*******************************//
-        public int checkAuthentication(String username, String password)
+        public int CheckAuthentication(String username, String password)
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -51,7 +51,7 @@ namespace Mes
             return type;
         }
 
-        public bool createCredentialsTable()
+        public bool CreateCredentialsTable()
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -92,7 +92,7 @@ namespace Mes
         //*******************************Sensors*******************************//
         
 
-        public bool createSensorTable()
+        public bool CreateSensorTable()
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -171,7 +171,7 @@ namespace Mes
             return true;
         }
 
-        public List<Sensor> getSensors(int id)
+        public List<Sensor> GetSensors(int id)
         {
             List<Sensor> sensorsList = new List<Sensor>();
             
@@ -227,7 +227,7 @@ namespace Mes
             return sensorsList;
         }
 
-        public bool removeSensor(int id)
+        public bool RemoveSensor(int id)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
@@ -251,7 +251,7 @@ namespace Mes
             return true;
         }
 
-        public bool createAlarmTable()
+        public bool CreateAlarmTable()
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -280,7 +280,7 @@ namespace Mes
             return false;
         }
 
-        public bool createMonitorTable()
+        public bool CreateMonitorTable()
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -309,7 +309,7 @@ namespace Mes
             return false;
         }
 
-        public bool createSystemTable()
+        public bool CreateSystemTable()
         {
 
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -338,7 +338,7 @@ namespace Mes
             return false;
         }
 
-        public int addSystem(int type)
+        public int AddSystem(int type)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
@@ -366,7 +366,7 @@ namespace Mes
             return id;
         }
 
-        public List<GenericSystem> getSystems()
+        public List<GenericSystem> GetSystems()
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
@@ -398,17 +398,17 @@ namespace Mes
             return systemList;
         }
 
-        public string viewSensorsTable()
+        public string ViewSensorsTable()
         {
             return null;
         }
 
-        public string viewAlarmsTable()
+        public string ViewAlarmsTable()
         {
             return null;
         }
 
-        public string viewMonitorsTable()
+        public string ViewMonitorsTable()
         {
             return null;
         }
