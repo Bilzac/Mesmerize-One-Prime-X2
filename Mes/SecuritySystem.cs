@@ -80,9 +80,11 @@ namespace Mes
                     queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(MesMessage) });
                     try
                     {
+                        //Formats the Message to the target type
                         Message msg = queue.Receive();
                         MesMessage mesMessage = (MesMessage)msg.Body;
 
+                        //Variables for storing message parameters
                         int deviceId;
                         string deviceCategory;
                         string deviceType;
@@ -94,8 +96,12 @@ namespace Mes
                         int index = -1;
                         int i = 0;
 
+                        //Message Decoding Condition.
                         switch (mesMessage.type)
                         {
+                            //-------------------------------------------------------------------------------------------------------
+                            //Add Device Switch Statement
+                            //-------------------------------------------------------------------------------------------------------
                             case ("ADD"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -110,8 +116,14 @@ namespace Mes
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
                                 location = tmpParams.ElementAt(5).ToUpper();
                                 switch (deviceType) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Add Sensor Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "SENSOR":
                                         Sensor sensor = null;
+                                        //-------------------------------------------------------------------------------------------------------
+                                        //Set Sensor Type
+                                        //-------------------------------------------------------------------------------------------------------
                                         switch (deviceCategory)
                                         {
                                             case "MAGNETIC":
@@ -142,8 +154,14 @@ namespace Mes
                                         securityLogger.appendLog("Added Sensor: " + sensor.Id.ToString() + " of Type: " + sensor.Type);
                                         Console.WriteLine("Added Sensor to System.");
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Add Alarm Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "ALARM":
                                         Alarm alarm = null;
+                                        //-------------------------------------------------------------------------------------------------------
+                                        //Set Alarm Type
+                                        //-------------------------------------------------------------------------------------------------------
                                         switch (deviceCategory)
                                         {
                                             case "LIGHT":
@@ -167,8 +185,14 @@ namespace Mes
                                         securityLogger.appendLog("Added Alarm: " + alarm.Id.ToString() + " of Type: " + alarm.Type);
                                         Console.WriteLine("Added Alarm to System.");
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Add Monitor Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "MONITOR":
                                         Monitor monitor = null;
+                                        //-------------------------------------------------------------------------------------------------------
+                                        //Set Monitor Type
+                                        //-------------------------------------------------------------------------------------------------------
                                         switch (deviceCategory)
                                         {
                                             case "MOTION":
@@ -192,6 +216,9 @@ namespace Mes
                                 }
                                 break;
                             case ("VIEW"):
+                                //-------------------------------------------------------------------------------------------------------
+                                //View Device(s) Switch Statement
+                                //-------------------------------------------------------------------------------------------------------
                                 tmpParams = GetParams(mesMessage);
                                 if (tmpParams.ElementAt(0).ToString() != "") {
                                     deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -211,6 +238,9 @@ namespace Mes
                                 List<Sensor> sensorOutput = new List<Sensor>();
                                 List<Alarm> alarmOutput = new List<Alarm>();
                                 switch (deviceType) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //View Sensor Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case ("SENSOR"):
                                         if (deviceId > 0)
                                         {
@@ -237,6 +267,9 @@ namespace Mes
                                         }
                                         Console.WriteLine("======================================================================");
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //View Alarm(s) Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case ("ALARM"):
                                         if (deviceId > 0)
                                         {
@@ -263,6 +296,9 @@ namespace Mes
                                         }
                                         Console.WriteLine("======================================================================");
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //View Monitor(s) Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case ("MONITOR"):
 
                                         break;
@@ -270,6 +306,9 @@ namespace Mes
                                         break;
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Edit Device Switch Statement
+                            //-------------------------------------------------------------------------------------------------------
                             case ("EDIT"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -285,6 +324,9 @@ namespace Mes
                                 location = tmpParams.ElementAt(5).ToUpper();
 
                                 switch (deviceType) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Edit Sensor Device
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "SENSOR":
                                         foreach (Sensor tmpSensor in sensors)
                                         {
@@ -315,6 +357,9 @@ namespace Mes
                                             Console.WriteLine("Failed editing sensor on system.");
                                         }
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Edit Alarm Device
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "ALARM":
                                         foreach (Alarm tmpAlarm in alarms)
                                         {
@@ -344,8 +389,10 @@ namespace Mes
                                             securityLogger.appendLog("Failed to add alarm");
                                             Console.WriteLine("Failed editing alarm on system.");
                                         }
-                                        //Send alarms.ElementAt(Index) object to DB Manager
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Edit Monitor Device 
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "MONITOR":
                                         foreach (Monitor tmpMonitor in monitors)
                                         {
@@ -369,7 +416,10 @@ namespace Mes
                                     default:
                                         break;
                                 }
-                                break;  // EDIT
+                                break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Remove Device Switch Statement
+                            //-------------------------------------------------------------------------------------------------------
                             case ("REMOVE"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -385,6 +435,9 @@ namespace Mes
                                 location = tmpParams.ElementAt(5).ToUpper();
 
                                 switch (deviceType) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Remove Sensor Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "SENSOR":
                                         foreach (Sensor tmpSensor in sensors)
                                         {
@@ -407,6 +460,9 @@ namespace Mes
                                             Console.WriteLine("Failed to remove sensor.");
                                         }
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Remove Alarm Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "ALARM":
                                         foreach (Alarm tmpAlarm in alarms)
                                         {
@@ -430,6 +486,9 @@ namespace Mes
                                             Console.WriteLine("Failed to remove alarm.");
                                         }
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Remove Monitor Device Switch Statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "MONITOR":
                                         /*foreach (Monitor tmpMonitor in monitors)
                                         {
@@ -453,9 +512,15 @@ namespace Mes
                                         break;
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Log Message
+                            //-------------------------------------------------------------------------------------------------------
                             case ("LOG"):
                                 securityLogger.appendLog(mesMessage.message);
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Arm Security System
+                            //-------------------------------------------------------------------------------------------------------
                             case ("ARM"):
                                 securityLogger.appendLog("Security System has been armed.");
                                 foreach (Sensor tmpSensor in sensors) {
@@ -474,6 +539,9 @@ namespace Mes
                                     }
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Disarm Security System
+                            //-------------------------------------------------------------------------------------------------------
                             case ("DISARM"):
                                 securityLogger.appendLog("Security System has been disarmed.");
                                 foreach (Sensor tmpSensor in sensors) {
@@ -495,12 +563,18 @@ namespace Mes
                                     }
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Trigger Device Statement
+                            //-------------------------------------------------------------------------------------------------------
                             case ("TRIGGER"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 location = tmpParams.ElementAt(1).ToUpper();
                                 deviceCategory = "ALARM";
                                 switch (deviceCategory) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Trigger Alarm statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "ALARM":
                                         foreach (Alarm tmpAlarm in alarms)
                                         {
@@ -516,6 +590,9 @@ namespace Mes
                                             i++;
                                         }
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Trigger Monitor statement
+                                    //-------------------------------------------------------------------------------------------------------
                                     case "MONITOR":
                                         foreach (Monitor tmpMonitor in monitors)
                                         {
@@ -540,11 +617,17 @@ namespace Mes
                                     securityLogger.appendLog(string.Format("Failed to trigger {0}", deviceCategory));
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Untrigger device statement
+                            //-------------------------------------------------------------------------------------------------------
                             case ("UNTRIGGER"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
                                 switch (deviceCategory) {
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Untrigger Alarm
+                                    //-------------------------------------------------------------------------------------------------------
                                     case ("ALARM"):
                                         foreach (Alarm tmpAlarm in alarms)
                                         {
@@ -557,6 +640,9 @@ namespace Mes
                                             alarms.ElementAt(index).Untrigger();
                                         }
                                         break;
+                                    //-------------------------------------------------------------------------------------------------------
+                                    //Untrigger Sensor
+                                    //-------------------------------------------------------------------------------------------------------
                                     case ("SENSOR"):
                                         foreach (Sensor tmpSensor in sensors)
                                         {
@@ -576,6 +662,9 @@ namespace Mes
                                         break;
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Check the Reading of a Device
+                            //-------------------------------------------------------------------------------------------------------
                             case ("READING"):
                                 tmpParams = GetParams(mesMessage);
                                 if(tmpParams.Count == 2)
@@ -594,6 +683,9 @@ namespace Mes
                                 //Thread thresholdCheckThread = new Thread(new ThreadStart(simSensor.ThresholdCheck(reading)));
                                 //thresholdCheckThread.Start(reading);
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Enable Simulation Environment
+                            //-------------------------------------------------------------------------------------------------------
                             case ("ENABLESIM"):
                                 for (int z = 0; z < Sensors.Count; z++)
                                 {
@@ -604,6 +696,9 @@ namespace Mes
                                     simulationThread.Start();
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Disable Simulation Environment
+                            //-------------------------------------------------------------------------------------------------------
                             case ("DISABLESIM"):
                                 for (int z = 0; z < Sensors.Count; z++)
                                 {
@@ -612,6 +707,9 @@ namespace Mes
                                     //simulationThreads.RemoveAt(z);
                                 }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Configure Reading Setting on Sensor
+                            //-------------------------------------------------------------------------------------------------------
                             case ("CHANGEREADING"):
                                 tmpParams = GetParams(mesMessage);
                                 int simId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -626,6 +724,9 @@ namespace Mes
                                         }
                                     }
                                 break;
+                            //-------------------------------------------------------------------------------------------------------
+                            //Displays the status of all alarms and sensors
+                            //-------------------------------------------------------------------------------------------------------
                             case ("STATUS"):
                                 Console.WriteLine("======================================================================");
                                 Console.WriteLine("=====================      Sensor Status      ========================");
@@ -673,6 +774,9 @@ namespace Mes
             }
         }
 
+        //-------------------------------------------------------------------------------------------------------
+        //Converts the message string into a list of string.
+        //-------------------------------------------------------------------------------------------------------
         public List<string> GetParams(MesMessage msg)
         {
             List<string> returnParam = new List<string>();
@@ -686,6 +790,9 @@ namespace Mes
             return returnParam;
         }
 
+        //-------------------------------------------------------------------------------------------------------
+        //Accessor of Id for SecuritySystem
+        //-------------------------------------------------------------------------------------------------------
         public int Id
         {
             get
@@ -699,6 +806,9 @@ namespace Mes
 		  
         }
 
+        //-------------------------------------------------------------------------------------------------------
+        //Accessor of List of Sensors for SecuritySystem
+        //-------------------------------------------------------------------------------------------------------
         public List<Sensor> Sensors
         {
             get
@@ -711,6 +821,9 @@ namespace Mes
             }
         }
 
+        //-------------------------------------------------------------------------------------------------------
+        //Accessor of List of Alarms for SecuritySystem
+        //-------------------------------------------------------------------------------------------------------
         public List<Alarm> Alarms
         {
             get
