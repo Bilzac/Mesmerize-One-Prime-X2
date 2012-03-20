@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alarm.cs" />
+    <Compile Include="TestHarness.cs" />
     <Compile Include="DB_Manager.cs" />
     <Compile Include="Concrete\FloodSensor.cs" />
     <Compile Include="Concrete\LightAlarm.cs" />
