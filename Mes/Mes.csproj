@@ -52,6 +52,7 @@
     <Compile Include="Concrete\MagneticSensor.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MesDataSet.Designer.cs" />
+    <Compile Include="MessageHandler.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="Concrete\MotionSensor.cs" />
     <Compile Include="SecuritySystem.cs" />
