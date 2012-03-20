@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Magnetic Sensor Class - Implements the default constructor of a magnetic sensor
+    * ===========================================================================
+    */
     class MagneticSensor : Sensor
     {
         public MagneticSensor()

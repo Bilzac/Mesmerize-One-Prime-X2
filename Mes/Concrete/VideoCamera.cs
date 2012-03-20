@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Video Monitor Class - Implements the default constructor of a video monitor
+    * ===========================================================================
+    */
     class VideoCamera : Monitor
     {
         public VideoCamera()

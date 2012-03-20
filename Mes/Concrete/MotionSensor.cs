@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Motion Sensor Class - Implements the default constructor of a motion sensor
+    * ===========================================================================
+    */
     class MotionSensor : Sensor
     {
         public MotionSensor()

@@ -9,6 +9,7 @@ namespace Mes
 {
     class DB_Manager
     {
+        //Default connection string information
         string connectionString;
         string database = "mes";
         string server = "localhost";
@@ -51,6 +52,7 @@ namespace Mes
             return type;
         }
 
+        // Creation of Credentials table
         public bool CreateCredentialsTable()
         {
 
@@ -89,6 +91,7 @@ namespace Mes
             return false;
         }
 
+        // Method to add user to the system
         public bool AddUser(string username, string password, int type)
         {
 
@@ -116,6 +119,7 @@ namespace Mes
             return true;
         }
 
+        // Method to change the password of a specified user account
         public bool ChangePassword(string username,string password)
         {
 
@@ -146,7 +150,7 @@ namespace Mes
 
         //*******************************Sensors*******************************//
         
-
+        // Generation of the sensors table
         public bool CreateSensorTable()
         {
 
@@ -173,6 +177,7 @@ namespace Mes
             return false;
         }
 
+        // Insertion of a new sensor into sensor table.
         public int AddSensor(Sensor sensor)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -201,6 +206,7 @@ namespace Mes
             return id;
         }
 
+        // Update of a sensor in the sensor table
         public bool EditSensor(Sensor sensor)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -226,6 +232,7 @@ namespace Mes
             return true;
         }
 
+        // Query of the sensors in the sensors table
         public List<Sensor> GetSensors(int id, int parentId)
         {
             List<Sensor> sensorsList = new List<Sensor>();
@@ -287,6 +294,7 @@ namespace Mes
             return sensorsList;
         }
 
+        // Deletion of a sensor in the sensors table.
         public bool RemoveSensor(int id)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -313,7 +321,7 @@ namespace Mes
 
         //*******************************Alarms*******************************//
 
-
+        // Generation of the Alarm table
         public bool CreateAlarmTable()
         {
 
@@ -344,6 +352,7 @@ namespace Mes
             return false;
         }
 
+        // Insertion of a new alarm in the alarm table.
         public int AddAlarm(Alarm alarm)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -372,6 +381,7 @@ namespace Mes
             return id;
         }
 
+        // Update of an alarm in the alarm table.
         public bool EditAlarm(Alarm alarm)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -397,6 +407,7 @@ namespace Mes
             return true;
         }
 
+        // Query of alarm in the alarm table
         public List<Alarm> GetAlarms(int id, int parentId)
         {
             List<Alarm> alarmList = new List<Alarm>();
@@ -451,6 +462,7 @@ namespace Mes
             return alarmList;
         }
 
+        // Removal of an alarm from the alarm table
         public bool RemoveAlarm(int id)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -476,6 +488,7 @@ namespace Mes
         }
 
 
+        // Generation of the Monitor table
         public bool CreateMonitorTable()
         {
 
@@ -505,6 +518,7 @@ namespace Mes
             return false;
         }
 
+        // Generation of the system table.
         public bool CreateSystemTable()
         {
 
@@ -534,6 +548,7 @@ namespace Mes
             return false;
         }
 
+        // Insertion of new systems into system table.
         public int AddSystem(int type)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
@@ -562,6 +577,7 @@ namespace Mes
             return id;
         }
 
+        // Query of systems in the system table.
         public List<GenericSystem> GetSystems()
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);

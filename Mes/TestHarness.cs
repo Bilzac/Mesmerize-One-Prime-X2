@@ -8,7 +8,7 @@ namespace Mes
 {
     class TestHarness
     {
-
+        // Variables to store filepath of test script
         string testFile;
 
         public string File
@@ -23,6 +23,7 @@ namespace Mes
             }
         }
 
+        // Retrieves the line by line commands in the test file.
         public List<string> getCommands()
         {
             List<string> cmds = new List<string>();
@@ -47,6 +48,7 @@ namespace Mes
             return cmds;
         }
 
+        // Outputs to the console the commands in the test file.
         public void printCommands(List<string> cmdList)
         {
             int i = 0;

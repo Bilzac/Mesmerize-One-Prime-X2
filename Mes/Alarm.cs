@@ -15,6 +15,7 @@ namespace Mes
         int parentId;           // refers to the parent system (default security)
         int sensitivity;        // The intensity of siren volume or light lumines
 
+        // Observer Pattern for systems to subscribe to
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;
         public event EventHandler TriggerChanged;
@@ -26,6 +27,7 @@ namespace Mes
 
         private List<IObserver<Alarm>> observers;
 
+        // Enable the alarm and logs the event
         public void Enable()
         {
             if (!isEnabled) {
@@ -40,7 +42,7 @@ namespace Mes
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Alarm {1} was enabled.", this.Type, this.Id);
+                    message.message = string.Format("{0} Alarm {1} at {2} was enabled.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else
@@ -50,6 +52,7 @@ namespace Mes
             }
         }
 
+        // Disables the alarm and logs the event
         public void Disable()
         {
             if (isEnabled)
@@ -65,7 +68,7 @@ namespace Mes
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Alarm {1} was disabled.", this.Type, this.Id);
+                    message.message = string.Format("{0} Alarm {1} at {2} was disabled.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else
@@ -75,9 +78,10 @@ namespace Mes
             }
         }
 
+        // Triggers the alarm is enable and sends an event
         public void Trigger()
         {
-            if (!isTriggered)
+            if (!isTriggered && isEnabled)
             {
                 isTriggered = true;
                 // Call event handler is fired if it exists
@@ -100,6 +104,7 @@ namespace Mes
             }
         }
 
+        // Untriggers an alarm if triggered and sends an event
         public void Untrigger()
         {
             if (isTriggered)
@@ -115,7 +120,7 @@ namespace Mes
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Alarm {1} was untriggered.", this.Type, this.Id);
+                    message.message = string.Format("{0} Alarm {1} at {2} was untriggered.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else

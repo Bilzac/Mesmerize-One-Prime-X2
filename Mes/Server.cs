@@ -84,6 +84,9 @@ namespace Mes
             Console.WriteLine("     VIEW");
             Console.WriteLine("     TEST");
             Console.WriteLine("     STATUS");
+            Console.WriteLine("     ARM");
+            Console.WriteLine("     DISARM");
+            Console.WriteLine("     UNTRIGGER");
             Console.WriteLine("     ENABLESIM");
             Console.WriteLine("     DISABLESIM");
             Console.WriteLine("     CHANGEREADING");
@@ -365,6 +368,36 @@ namespace Mes
                         mesMsg.message = "";
                         queue.Send(mesMsg);
                         break;
+                    case "ARM":
+                        mesMsg.type = "ARM";
+                        mesMsg.message = "";
+                        queue.Send(mesMsg);
+                        break;
+                    case "DISARM":
+                        mesMsg.type = "DISARM";
+                        mesMsg.message = "";
+                        queue.Send(mesMsg);
+                        break;
+                    case "UNTRIGGER":
+                        mesMsg.type = "UNTRIGGER";
+
+                        Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
+                        deviceCategory = Console.ReadLine().ToUpper();
+                        while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM") {
+                            Console.WriteLine("Please enter the valid category of the device.\n(SENSOR|MONITOR|ALARM)");
+                            deviceCategory = Console.ReadLine().ToUpper();
+                        }
+
+                        Console.WriteLine("Please enter the id of the device");
+                        deviceId = Console.ReadLine();
+                        while (!(int.TryParse(deviceId, out tmp))) 
+                        {
+                            Console.WriteLine("Please enter a valid id of the device");
+                            deviceId = Console.ReadLine();
+                        }
+                        mesMsg.message = deviceId + "," + deviceCategory;
+                        queue.Send(mesMsg);
+                        break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
                         terminalLog.appendLog("Connection to server has been terminated by the user.");
@@ -382,6 +415,9 @@ namespace Mes
                         Console.WriteLine("     VIEW");
                         Console.WriteLine("     TEST");
                         Console.WriteLine("     STATUS");
+                        Console.WriteLine("     ARM");
+                        Console.WriteLine("     DISARM");
+                        Console.WriteLine("     UNTRIGGER");
                         Console.WriteLine("     ENABLESIM");
                         Console.WriteLine("     DISABLESIM");
                         Console.WriteLine("     CHANGEREADING");

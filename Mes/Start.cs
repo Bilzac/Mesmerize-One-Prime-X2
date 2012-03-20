@@ -9,6 +9,7 @@ namespace Mes
     {
         static void Main(string[] args)
         {
+            // Starts the execution of the server
             Server server = new Server();
             server.Run();
         }

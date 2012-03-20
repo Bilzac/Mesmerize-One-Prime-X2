@@ -13,6 +13,7 @@ namespace Mes
         int parentId;               // refers to the parent system (default security)
         int monitorValue;           // A value used for a monitor
 
+        //Observer pattern event listener objects
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;
         public event EventHandler TriggerChanged;
@@ -23,7 +24,8 @@ namespace Mes
         }
 
         private List<IObserver<Monitor>> observers;
-
+         
+        //Enables the monitor
         public void Enable()
         {
             if (!isEnabled) {
@@ -48,6 +50,7 @@ namespace Mes
             }
         }
 
+        // Disables the monitor
         public void Disable()
         {
             if (isEnabled)
@@ -72,7 +75,7 @@ namespace Mes
                 }
             }
         }
-
+        // Triggers the monitor
         public void Trigger()
         {
             if (!isTriggered)
@@ -97,7 +100,7 @@ namespace Mes
                 }
             }
         }
-
+        // Untriggers the monitor
         public void Untrigger()
         {
             if (isTriggered)

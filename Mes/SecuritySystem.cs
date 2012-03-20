@@ -267,7 +267,7 @@ namespace Mes
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
                                 deviceType = tmpParams.ElementAt(2).ToUpper();
                                 enableParam = tmpParams.ElementAt(3).ToUpper();
-                                if (enableParam == "true") {
+                                if (enableParam == "TRUE") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
@@ -367,7 +367,7 @@ namespace Mes
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
                                 deviceType = tmpParams.ElementAt(2).ToUpper();
                                 enableParam = tmpParams.ElementAt(3).ToUpper();
-                                if (enableParam == "true") {
+                                if (enableParam == "TRUE") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
@@ -447,6 +447,45 @@ namespace Mes
                             case ("LOG"):
                                 securityLogger.appendLog(mesMessage.message);
                                 break;
+                            case ("ARM"):
+                                securityLogger.appendLog("Security System has been armed.");
+                                foreach (Sensor tmpSensor in sensors) {
+                                    tmpSensor.Enable();
+                                    if (mesDB.EditSensor(tmpSensor))
+                                    {
+                                        //securityLogger.appendLog("Sensor: " + tmpSensor.Id + " has been armed.");
+                                    }
+                                }
+                                foreach (Alarm tmpAlarm in alarms)
+                                {
+                                    tmpAlarm.Enable();
+                                    if (mesDB.EditAlarm(tmpAlarm))
+                                    {
+                                        //securityLogger.appendLog("Alarm: " + tmpAlarm.Id + " has been armed.");
+                                    }
+                                }
+                                break;
+                            case ("DISARM"):
+                                securityLogger.appendLog("Security System has been disarmed.");
+                                foreach (Sensor tmpSensor in sensors) {
+                                    tmpSensor.Disable();
+                                    tmpSensor.Untrigger();
+                                    tmpSensor.SimulationSensor.Reading = -1;
+                                    if (mesDB.EditSensor(tmpSensor))
+                                    {
+                                        //securityLogger.appendLog("Sensor: " + tmpSensor.Id + " has been disarmed.");
+                                    }
+                                }
+                                foreach (Alarm tmpAlarm in alarms)
+                                {
+                                    tmpAlarm.Disable();
+                                    tmpAlarm.Untrigger();
+                                    if (mesDB.EditAlarm(tmpAlarm))
+                                    {
+                                        //securityLogger.appendLog("Alarm: " + tmpAlarm.Id + " has been disarmed.");
+                                    }
+                                }
+                                break;
                             case ("TRIGGER"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
@@ -490,6 +529,42 @@ namespace Mes
                                 else
                                 {
                                     securityLogger.appendLog(string.Format("Failed to trigger {0}", deviceCategory));
+                                }
+                                break;
+                            case ("UNTRIGGER"):
+                                tmpParams = GetParams(mesMessage);
+                                deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
+                                switch (deviceCategory) {
+                                    case ("ALARM"):
+                                        foreach (Alarm tmpAlarm in alarms)
+                                        {
+                                            if(tmpAlarm.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0) {
+                                            alarms.ElementAt(index).Untrigger();
+                                        }
+                                        break;
+                                    case ("SENSOR"):
+                                        foreach (Sensor tmpSensor in sensors)
+                                        {
+                                            if (tmpSensor.Id == deviceId)
+                                            {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            sensors.ElementAt(index).Untrigger();
+                                            sensors.ElementAt(index).SimulationSensor.Reading = -1;
+                                        }
+                                        break;
+                                    default:
+                                        break;
                                 }
                                 break;
                             case ("READING"):
@@ -537,7 +612,9 @@ namespace Mes
                                         {
                                             int reading = Convert.ToInt32(tmpParams.ElementAt(1));
                                             sensors[z].SimulationSensor.Reading = reading;
-                                            securityLogger.appendLog("Simulated a reading change at sensor " + simId.ToString());
+                                            Console.WriteLine("Sensor: " + sensors[z].Id + " reading has changed");
+                                            securityLogger.appendLog(string.Format("Sensor: {0} of Type: {1} at {2} reading value has changed to {3}",sensors[z].Id,sensors[z].Type,sensors[z].Location,reading.ToString()));
+>>>>>>> Started adding comments to each of the classes.
                                         }
                                     }
                                 break;
@@ -550,6 +627,7 @@ namespace Mes
                                     Console.WriteLine("Sensor ID: " + tmpSensor.Id + " Sensor Type: " + tmpSensor.Type);
                                     Console.WriteLine("Location: " + tmpSensor.Location);
                                     Console.WriteLine("Triggered: " + tmpSensor.IsTriggered.ToString());
+                                    Console.WriteLine("Reading: " + tmpSensor.SimulationSensor.Reading.ToString());
                                     Console.WriteLine("----------------------------------------------------------------------");
                                 }
                                 Console.WriteLine("======================================================================");

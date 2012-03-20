@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Mes
 {
+    // Interface for all systems to be added to the server.
     public interface GenericSystem
     {
-        //Add Stuff. Not Sure as to what to add here yet...
         void Run();
     }
 }

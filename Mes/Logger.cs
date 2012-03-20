@@ -8,10 +8,11 @@ namespace Mes
 {
     class Logger
     {
-
+        // Log file and directory attributes
         string logFileName = "MesLog.txt";
         string logFilePath = System.IO.Directory.GetCurrentDirectory() + "\\Log\\";
 
+        // Method to append to log file.
         public void appendLog(string Message)
         {
             string logFile = logFilePath + logFileName;

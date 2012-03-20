@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Siren Alarm Class - Implements the default constructor of a siren alarm
+    * ===========================================================================
+    */
     class SirenAlarm : Alarm
     {
         public SirenAlarm()

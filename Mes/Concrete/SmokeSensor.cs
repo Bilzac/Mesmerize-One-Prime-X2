@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Smoke Sensor Class - Implements the default constructor of a smoke sensor
+    * ===========================================================================
+    */
     class SmokeSensor : Sensor
     {
         public SmokeSensor()

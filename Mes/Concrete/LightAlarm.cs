@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Mes
 {
+    /*============================================================================
+    * Light Alarm Class - Implements the default constructor of a light alarm
+    * ===========================================================================
+    */
     class LightAlarm : Alarm
     {
         public LightAlarm()

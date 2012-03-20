@@ -14,7 +14,7 @@ namespace Mes{
 
         public SimulationSensor()
         {
-            reading = 0;
+            reading = -1;
             frequency = 2000;
             on = true;
         }
@@ -110,7 +110,7 @@ namespace Mes{
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Sensor {1} was enabled.", this.Type, this.Id);
+                    message.message = string.Format("{0} Sensor {1} at {2} was enabled.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else
@@ -135,7 +135,7 @@ namespace Mes{
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Sensor {1} was disabled.", this.Type, this.Id);
+                    message.message = string.Format("{0} Sensor {1} at {2} was disabled.", this.Type, this.Id, this.Location);
                     queue.Send(message);
                 }
                 else
@@ -147,7 +147,7 @@ namespace Mes{
 
         public void Trigger()
         {
-            if (!isTriggered)
+            if (!isTriggered && isEnabled)
             {
                 isTriggered = true;
                 // Call event handler is fired if it exists
@@ -194,7 +194,7 @@ namespace Mes{
                     // log the enable event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Sensor {1} was untriggered.", this.Type, this.Id);
+                    message.message = string.Format("{0} Sensor {1} at {2} was untriggered.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else
