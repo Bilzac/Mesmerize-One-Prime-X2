@@ -75,6 +75,8 @@ namespace Mes
                         string location;
                         string enableParam;
                         List<string> tmpParams = new List<string>();
+                        int index = -1;
+                        int i = 0;
 
                         switch (mesMessage.type)
                         {
@@ -202,10 +204,9 @@ namespace Mes
                                 }
                                 break;
                             case ("VIEW"):
+
                                 break;
                             case ("EDIT"):
-                                int index = -1;
-                                int i = 0;
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
@@ -256,7 +257,7 @@ namespace Mes
                                         }
                                         else
                                         {
-                                            securityLogger.appendLog("Failed to add sensor");
+                                            securityLogger.appendLog("Failed to add alarm");
                                         }
                                         //Send alarms.ElementAt(Index) object to DB Manager
                                          * */
@@ -277,7 +278,7 @@ namespace Mes
                                         }
                                         else
                                         {
-                                            securityLogger.appendLog("Failed to add sensor");
+                                            securityLogger.appendLog("Failed to add monitor");
                                         }
                                         //Send monitors.ElementAt(Index) object to DB Manager
                                          * */
@@ -287,6 +288,79 @@ namespace Mes
                                 }
                                 break;
                             case ("REMOVE"):
+                                tmpParams = GetParams(mesMessage);
+                                deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
+                                deviceType = tmpParams.ElementAt(2);
+                                enableParam = tmpParams.ElementAt(3);
+                                if (enableParam == "true") {
+                                    isEnable = true;
+                                } else {
+                                    isEnable = false;
+                                }
+                                threshold = Convert.ToInt16(tmpParams.ElementAt(4));
+                                location = tmpParams.ElementAt(5);
+
+                                switch (deviceCategory) {
+                                    case "SENSOR":
+                                        foreach (Sensor tmpSensor in sensors)
+                                        {
+                                            if (tmpSensor.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            //Remove from DB send sensors.ElementAt(index).id;
+                                            sensors.RemoveAt(index);
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to remove sensor");
+                                        }
+                                        break;
+                                    case "ALARM":
+                                        /*foreach (Alarm tmpAlarm in alarms)
+                                        {
+                                            if (tmpAlarm.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            //Remove from DB send alarms.ElementAt(index).id;
+                                            alarms.RemoveAt(index);
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to remove alarm");
+                                        }
+                                         * */
+                                        break;
+                                    case "MONITOR":
+                                        /*foreach (Monitor tmpMonitor in monitors)
+                                        {
+                                            if (tmpMonitor.Id == deviceId) {
+                                                index = i;
+                                            }
+                                            i++;
+                                        }
+                                        if (index >= 0)
+                                        {
+                                            //Remove from DB send monitors.ElementAt(index).id;
+                                            monitors.RemoveAt(index);
+                                        }
+                                        else
+                                        {
+                                            securityLogger.appendLog("Failed to remove monitor");
+                                        }
+                                         * */
+                                        break;
+                                    default:
+                                        break;
+                                }
                                 break;
                             case ("LOG"):
 
