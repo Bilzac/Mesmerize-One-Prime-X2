@@ -128,6 +128,7 @@ namespace Mes
                                         sensor.Id = mesDB.AddSensor(sensor);
                                         sensors.Add(sensor);
                                         securityLogger.appendLog("Added Sensor: " + sensor.Id.ToString() + " of Type: " + sensor.Type);
+                                        Console.WriteLine("Added Sensor to System.");
                                         break;
                                     case "ALARM":
                                         Alarm alarm = null;
@@ -152,6 +153,7 @@ namespace Mes
                                         alarm.Id = mesDB.AddAlarm(alarm);
                                         alarms.Add(alarm);
                                         securityLogger.appendLog("Added Alarm: " + alarm.Id.ToString() + " of Type: " + alarm.Type);
+                                        Console.WriteLine("Added Alarm to System.");
                                         break;
                                     case "MONITOR":
                                         Monitor monitor = null;
@@ -289,15 +291,18 @@ namespace Mes
                                             if (mesDB.EditSensor(sensors.ElementAt(index)))
                                             {
                                                 securityLogger.appendLog("Successfully edited sensor: " + sensors.ElementAt(index).Id.ToString());
+                                                Console.WriteLine("Finished edit sensor.");
                                             }
                                             else
                                             {
                                                 securityLogger.appendLog("Failed to edited sensor: " + sensors.ElementAt(index).Id.ToString());
+                                                Console.WriteLine("Failed editing sensor on system.");
                                             }
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to add sensor!");
+                                            Console.WriteLine("Failed editing sensor on system.");
                                         }
                                         break;
                                     case "ALARM":
@@ -316,15 +321,18 @@ namespace Mes
                                             if (mesDB.EditAlarm(alarms.ElementAt(index)))
                                             {
                                                 securityLogger.appendLog("Successfully edited alarm: " + alarms.ElementAt(index).Id.ToString());
+                                                Console.WriteLine("Finished editing alarm on system.");
                                             }
                                             else
                                             {
                                                 securityLogger.appendLog("Failed to edited alarm: " + alarms.ElementAt(index).Id.ToString());
+                                                Console.WriteLine("Failed editing alarm on system.");
                                             }
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to add alarm");
+                                            Console.WriteLine("Failed editing alarm on system.");
                                         }
                                         //Send alarms.ElementAt(Index) object to DB Manager
                                         break;
@@ -381,10 +389,12 @@ namespace Mes
                                             mesDB.RemoveSensor(sensors.ElementAt(index).Id);
                                             sensors.RemoveAt(index);
                                             securityLogger.appendLog("Successfully removed sensor: " + tmpId.ToString());
+                                            Console.WriteLine("Remove sensor successful.");
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to remove sensor");
+                                            Console.WriteLine("Failed to remove sensor.");
                                         }
                                         break;
                                     case "ALARM":
@@ -402,10 +412,12 @@ namespace Mes
                                             mesDB.RemoveAlarm(alarms.ElementAt(index).Id);
                                             alarms.RemoveAt(index);
                                             securityLogger.appendLog("Successfully removed alarm: " + tmpId.ToString());
+                                            Console.WriteLine("Remove alarm successful.");
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to remove alarm");
+                                            Console.WriteLine("Failed to remove alarm.");
                                         }
                                         break;
                                     case "MONITOR":
