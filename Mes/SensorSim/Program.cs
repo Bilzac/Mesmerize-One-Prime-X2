@@ -97,7 +97,7 @@ namespace SensorSim
             ArrayList realSensors = new ArrayList();
             List<Mes.Monitor> realMonitors = new List<Mes.Monitor>();
             List<Mes.Alarm> realAlarms = new List<Mes.Alarm>();
-            Mes.SensorMessage sensorMessage = new Mes.SensorMessage();
+            Mes.MesMessage sensorMessage = new Mes.MesMessage();
             Hashtable threads = new Hashtable();
             int sensorCount = 0;
             int alarmCount = 0;
@@ -115,7 +115,7 @@ namespace SensorSim
                         inText = Console.ReadLine().ToUpper();
                         if (inText.Equals("S"))
                         {
-                            Mes.SensorMessage msg = new Mes.SensorMessage();
+                            Mes.MesMessage msg = new Mes.MesMessage();
 
                             MessageQueue queue = new MessageQueue(queueName);
                             queue.Send(msg);
@@ -138,8 +138,8 @@ namespace SensorSim
                         Console.WriteLine("Trigger sensor #: ");
                         inText = Console.ReadLine();
                         // set message data
-                        sensorMessage.sensorId = Convert.ToInt32(inText);
-                        sensorMessage.messageType = (int)Actions.Trig;
+                        //sensorMessage.sensorId = Convert.ToInt32(inText);
+                        //sensorMessage.messageType = (int)Actions.Trig;
 
                         // construct message
                         Message message = new Message();

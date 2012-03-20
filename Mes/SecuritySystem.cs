@@ -17,7 +17,7 @@ namespace Mes
     {
         MessageQueue queue = null;
         Message message = null;
-        SensorMessage sensorMessage = null;
+        MesMessage sensorMessage = null;
         string queueName = @".\Private$\security";
         Logger msgLogger = new Logger();
 
@@ -59,9 +59,9 @@ namespace Mes
                     try
                     {
                         Message msg = queue.Receive();
-                        string mesMessage = (MesMessage)message.Body;
+                        MesMessage mesMessage = (MesMessage)message.Body;
 
-                        switch (mesMessage.Type)
+                        switch (mesMessage.type)
                         {
                             case ("ADD"):
                                 break;

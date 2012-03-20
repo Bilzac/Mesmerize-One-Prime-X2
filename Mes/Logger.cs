@@ -12,12 +12,6 @@ namespace Mes
         string logFileName = "MesLog.txt";
         string logFilePath = System.IO.Directory.GetCurrentDirectory() + "\\Log\\";
 
-        public string formatSensorMessage(SensorMessage sensorMsg)
-        {
-            string retVal = "<Sending Message for sensor> Sensor ID: " + sensorMsg.sensorId + " Sensor Type: " + sensorMsg.messageType + " Sensor Message: " + sensorMsg.messageString + " Sensor Value: " + sensorMsg.messageValue;
-            return retVal;
-        }
-
         public void appendLog(string Message)
         {
             string logFile = logFilePath + logFileName;

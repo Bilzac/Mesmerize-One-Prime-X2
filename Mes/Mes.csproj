@@ -46,14 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alarm.cs" />
-    <Compile Include="TestHarness.cs" />
     <Compile Include="DB_Manager.cs" />
     <Compile Include="Concrete\FloodSensor.cs" />
     <Compile Include="Concrete\LightAlarm.cs" />
     <Compile Include="Concrete\MagneticSensor.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MesDataSet.Designer.cs" />
-    <Compile Include="MessageHandler.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="Concrete\MotionSensor.cs" />
     <Compile Include="SecuritySystem.cs" />
