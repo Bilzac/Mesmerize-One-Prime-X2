@@ -290,9 +290,9 @@ namespace Mes
                 if (!serverTerminal.terminalState())
                 {
                     Console.WriteLine("Server shutting down!");
-                    Thread.Sleep(2000);
                     terminalThread.Abort();
                     running = false;
+                    Thread.Sleep(2000);   
                     break;
                 }
             }
