@@ -361,9 +361,15 @@ namespace Mes
                                         foreach (Sensor tmpSensor in sensors)
                                         {
                                             if (tmpSensor.Id == deviceId) {
-                                                tmpSensor.Trigger();
-                                                index=i;
-                                                break;
+                                                if (tmpSensor.Threshold > threshold) {
+                                                    // Log trigger messages that don't have
+                                                    securityLogger.appendLog(
+                                                        string.Format("Sensor {0} trigger is below threshold: ignored", deviceId));
+                                                } else {    // The trigger passed the sensitivity threshold, so trigger
+                                                    tmpSensor.Trigger();
+                                                    index=i;
+                                                    break;
+                                                }
                                             }
                                             i++;
                                         }
@@ -406,7 +412,7 @@ namespace Mes
                                     securityLogger.appendLog(string.Format("Failed to add {0}", deviceCategory));
                                 }
                                 break;
-                            default:    // Not a any of the actions add, edit, view, trigger, etc. Error.
+                            default:    // Not any of the actions add, edit, view, trigger, etc. Error.
                                 break;
                         }
                     }
