@@ -89,17 +89,15 @@ namespace Mes
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
-                                deviceType = tmpParams.ElementAt(2);
-                                enableParam = tmpParams.ElementAt(3);
+                                deviceType = tmpParams.ElementAt(2).ToUpper();
+                                enableParam = tmpParams.ElementAt(3).ToUpper();
                                 if (enableParam == "TRUE") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
                                 }
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
-                                location = tmpParams.ElementAt(5);
-                                Console.WriteLine("Decoded Add Message!");
-
+                                location = tmpParams.ElementAt(5).ToUpper();
                                 switch (deviceType) {
                                     case "SENSOR":
                                         Sensor sensor = null;
@@ -112,7 +110,6 @@ namespace Mes
                                             case "MOTION":
                                                 sensor = new MotionSensor();
                                                 sensor.Type = "MOTION";
-                                                Console.WriteLine("Adding Motion Sensor!");
                                                 break;
                                             case "FLOOD":
                                                 sensor = new FloodSensor();
@@ -131,7 +128,7 @@ namespace Mes
                                         sensor.Threshold = threshold;
                                         sensor.Id = mesDB.AddSensor(sensor);
                                         sensors.Add(sensor);
-                                        Console.WriteLine("Added Sensor successfully!");
+                                        securityLogger.appendLog("Added Sensor: " + sensor.Id.ToString() + " of Type: " + sensor.Type);
                                         break;
                                     case "ALARM":
                                         Alarm alarm = null;
@@ -153,6 +150,7 @@ namespace Mes
                                         alarm.Sensitivity = threshold;
                                         //Add to DB
                                         //Store into List<device>
+                                        //securityLogger.appendLog("Added Alarm: " + alarm.Id.ToString() + " of Type: " + alarm.Type);
                                         break;
                                     case "MONITOR":
                                         Monitor monitor = null;
@@ -170,27 +168,83 @@ namespace Mes
                                         //threshold
                                         //Add to DB
                                         //Store into List<device>
+                                        //securityLogger.appendLog("Added Monitor: " + monitor.Id.ToString() + " of Type: " + monitor.Type);
+                                        break;
+                                    default:
+                                        Console.WriteLine("Failed to Register Device!");
+                                        //securityLogger.appendLog("Failed to Register Device!);
+                                        break;
+                                }
+                                break;
+                            case ("VIEW"):
+                                tmpParams = GetParams(mesMessage);
+                                if (tmpParams.ElementAt(0).ToString() != "") {
+                                    deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                } else {
+                                    deviceId = -1;
+                                }
+                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
+                                deviceType = tmpParams.ElementAt(2).ToUpper().ToUpper();
+                                enableParam = tmpParams.ElementAt(3).ToUpper();
+                                if (enableParam == "TRUE") {
+                                    isEnable = true;
+                                } else {
+                                    isEnable = false;
+                                }
+                                threshold = Convert.ToInt16(tmpParams.ElementAt(4));
+                                location = tmpParams.ElementAt(5).ToUpper();
+                                List<Sensor> sensorOutput = new List<Sensor>();
+                                switch (deviceType) {
+                                    case ("SENSOR"):
+                                        if (deviceId > 0)
+                                        {
+                                            sensorOutput = mesDB.GetSensors(deviceId);
+                                            securityLogger.appendLog("User has requested to view target sensor.");
+                                        }
+                                        else
+                                        {
+                                            sensorOutput = mesDB.GetSensors(-1);
+                                            securityLogger.appendLog("User has requested to view all sensors.");
+                                        }
+                                        Console.WriteLine("======================================================================");
+                                        Console.WriteLine("======================================================================");
+                                        Console.WriteLine("=====================     Showing Sensors     ========================");
+                                        Console.WriteLine("======================================================================");
+                                        foreach (Sensor tmpSensor in sensorOutput)
+                                        {
+                                            Console.WriteLine("======================================================================");
+                                            Console.WriteLine("Sensor Type: " + tmpSensor.Type + "     Sensor ID: " + tmpSensor.Id);
+                                            Console.WriteLine("----------------------------------------------------------------------");
+                                            Console.WriteLine("Sensor Armed: " + tmpSensor.IsEnabled.ToString());
+                                            Console.WriteLine("Sensor Triggered: " + tmpSensor.IsTriggered.ToString());
+                                            Console.WriteLine("Sensor Location: " + tmpSensor.Location);
+                                            Console.WriteLine("Sensor Threshold: " + tmpSensor.Threshold);
+                                        }
+                                        Console.WriteLine("======================================================================");
+                                        break;
+                                    case ("ALARM"):
+
+                                        break;
+                                    case ("MONITOR"):
+
                                         break;
                                     default:
                                         break;
                                 }
                                 break;
-                            case ("VIEW"):
-
-                                break;
                             case ("EDIT"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
-                                deviceType = tmpParams.ElementAt(2);
-                                enableParam = tmpParams.ElementAt(3);
+                                deviceType = tmpParams.ElementAt(2).ToUpper();
+                                enableParam = tmpParams.ElementAt(3).ToUpper();
                                 if (enableParam == "true") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
                                 }
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
-                                location = tmpParams.ElementAt(5);
+                                location = tmpParams.ElementAt(5).ToUpper();
 
                                 switch (deviceType) {
                                     case "SENSOR":
@@ -208,11 +262,11 @@ namespace Mes
                                             sensors.ElementAt(index).Threshold = threshold;
                                             if (mesDB.EditSensor(sensors.ElementAt(index)))
                                             {
-                                                securityLogger.appendLog("Successfully added sensor.");
+                                                securityLogger.appendLog("Successfully edited sensor: " + sensors.ElementAt(index).Id.ToString());
                                             }
                                             else
                                             {
-                                                securityLogger.appendLog("Failed to add sensor!");
+                                                securityLogger.appendLog("Failed to edited sensor: " + sensors.ElementAt(index).Id.ToString());
                                             }
                                         }
                                         else
@@ -268,15 +322,15 @@ namespace Mes
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
-                                deviceType = tmpParams.ElementAt(2);
-                                enableParam = tmpParams.ElementAt(3);
+                                deviceType = tmpParams.ElementAt(2).ToUpper();
+                                enableParam = tmpParams.ElementAt(3).ToUpper();
                                 if (enableParam == "true") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
                                 }
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
-                                location = tmpParams.ElementAt(5);
+                                location = tmpParams.ElementAt(5).ToUpper();
 
                                 switch (deviceType) {
                                     case "SENSOR":
@@ -289,8 +343,10 @@ namespace Mes
                                         }
                                         if (index >= 0)
                                         {
+                                            int tmpId = sensors.ElementAt(index).Id;
                                             mesDB.RemoveSensor(sensors.ElementAt(index).Id);
                                             sensors.RemoveAt(index);
+                                            securityLogger.appendLog("Successfully removed sensor: " + tmpId.ToString());
                                         }
                                         else
                                         {
@@ -346,15 +402,15 @@ namespace Mes
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
                                 deviceCategory = tmpParams.ElementAt(1).ToUpper();
-                                deviceType = tmpParams.ElementAt(2);
-                                enableParam = tmpParams.ElementAt(3);
+                                deviceType = tmpParams.ElementAt(2).ToUpper();
+                                enableParam = tmpParams.ElementAt(3).ToUpper();
                                 if (enableParam == "true") {
                                     isEnable = true;
                                 } else {
                                     isEnable = false;
                                 }
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
-                                location = tmpParams.ElementAt(5);
+                                location = tmpParams.ElementAt(5).ToUpper();
 
                                 switch (deviceCategory) {
                                     case "SENSOR":

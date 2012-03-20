@@ -72,6 +72,14 @@ namespace Mes
             Console.WriteLine("------------|_______|---------------");
             Console.WriteLine("Welcome to Mesmerize One Prime X2");
             Console.WriteLine("");
+            Console.WriteLine("Valid commands are:");
+            Console.WriteLine("     ADD");
+            Console.WriteLine("     REMOVE");
+            Console.WriteLine("     EDIT");
+            Console.WriteLine("     VIEW");
+            Console.WriteLine("     TEST");
+            Console.WriteLine("     EXIT");
+            Console.WriteLine("");
             while (online)
             {
                 String command = Console.ReadLine();
@@ -91,11 +99,11 @@ namespace Mes
                             // "id,deviceType(magnetic),category(sensor),enable,threshold,location"
                             terminalLog.appendLog("Add Sensor Command Executed.");
                             mesMsg.type = "ADD";
-                            Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                            Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
                             deviceCategory = Console.ReadLine();
-                            Console.WriteLine("Please enter the type of the device.(MAGNETIC|MOTION|FLOOD|SMOKE|LIGHT|SIREN|VIDEO)");
+                            Console.WriteLine("Please enter the type of the device.\n(MAGNETIC|MOTION|FLOOD|SMOKE|LIGHT|SIREN|VIDEO)");
                             deviceType = Console.ReadLine();
-                            Console.WriteLine("Please enter the if the device should be enabled.(TRUE|FALSE)");
+                            Console.WriteLine("Please enter the if the device should be enabled.\n(TRUE|FALSE)");
                             isEnable = Console.ReadLine();
                             Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                             threshold = Console.ReadLine();
@@ -113,11 +121,11 @@ namespace Mes
                         Console.WriteLine("Edit Device:");
                         terminalLog.appendLog("Edit Sensor Command Executed");
                         mesMsg.type = "EDIT";
-                        Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                        Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
                         deviceCategory = Console.ReadLine();
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
-                        Console.WriteLine("Please enter the if the device should be enabled.(TRUE|FALSE)");
+                        Console.WriteLine("Please enter the if the device should be enabled.\n(TRUE|FALSE)");
                         isEnable = Console.ReadLine();
                         Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                         threshold = Console.ReadLine();
@@ -130,7 +138,7 @@ namespace Mes
                         Console.WriteLine("Remove Device:");
                         terminalLog.appendLog("Remove Sensor Command Executed");
                         mesMsg.type = "REMOVE";
-                        Console.WriteLine("Please enter the category of the device.(SENSOR|MONITOR|ALARM)");
+                        Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
                         deviceCategory = Console.ReadLine();
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
@@ -140,6 +148,13 @@ namespace Mes
                     case "VIEW":
                         Console.WriteLine("Viewing Devices");
                         terminalLog.appendLog("View Sensor Command Executed");
+                        mesMsg.type = "VIEW";
+                        Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
+                        deviceCategory = Console.ReadLine();
+                        Console.WriteLine("Please enter the id of the device");
+                        deviceId = Console.ReadLine();
+                        mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
+                        queue.Send(mesMsg);
                         break;
                     case "TEST":
                         Console.WriteLine("Please specify the file path to the test file.");
@@ -167,6 +182,13 @@ namespace Mes
                     default:
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         terminalLog.appendLog("Invalid Command Entered: " + command);
+                        Console.WriteLine("Valid commands are:");
+                        Console.WriteLine("     ADD");
+                        Console.WriteLine("     REMOVE");
+                        Console.WriteLine("     EDIT");
+                        Console.WriteLine("     VIEW");
+                        Console.WriteLine("     TEST");
+                        Console.WriteLine("     EXIT");
                         break;
                 }
                 Thread.Sleep(0);

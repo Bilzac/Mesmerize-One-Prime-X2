@@ -181,7 +181,7 @@ namespace Mes
             try
             {
                 sqlConnection.Open();
-                sqlCmd.CommandText = "SELECT * FROM SYSTEMS";
+                sqlCmd.CommandText = "SELECT * FROM SENSORS";
                 if ( id != -1)
                 {
                     sqlCmd.CommandText += " WHERE ID=" + id;
@@ -195,7 +195,7 @@ namespace Mes
                         case "FLOOD":
                             sensor = new FloodSensor();
                             break;
-                        case "MAGENETIC":
+                        case "MAGNETIC":
                             sensor = new MagneticSensor();
                             break;
                         case "SMOKE":
