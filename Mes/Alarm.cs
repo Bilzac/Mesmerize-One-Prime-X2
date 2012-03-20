@@ -90,7 +90,7 @@ namespace Mes
                     // log the trigger event
                     Mes.MesMessage message = new Mes.MesMessage();
                     message.type = "LOG";
-                    message.message = string.Format("{0} Alarm {1} was triggered.", this.Type, this.Id);
+                    message.message = string.Format("{0} Alarm {1} at {2} was triggered.", this.Type, this.Id, this.location);
                     queue.Send(message);
                 }
                 else

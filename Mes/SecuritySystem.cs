@@ -223,7 +223,6 @@ namespace Mes
                                             Console.WriteLine("Sensor Type: " + tmpSensor.Type + "     Sensor ID: " + tmpSensor.Id);
                                             Console.WriteLine("----------------------------------------------------------------------");
                                             Console.WriteLine("Sensor Armed: " + tmpSensor.IsEnabled.ToString());
-                                            Console.WriteLine("Sensor Triggered: " + tmpSensor.IsTriggered.ToString());
                                             Console.WriteLine("Sensor Location: " + tmpSensor.Location);
                                             Console.WriteLine("Sensor Threshold: " + tmpSensor.Threshold);
                                         }
@@ -250,7 +249,6 @@ namespace Mes
                                             Console.WriteLine("Alarm Type: " + tmpAlarm.Type + "     Alarm ID: " + tmpAlarm.Id);
                                             Console.WriteLine("----------------------------------------------------------------------");
                                             Console.WriteLine("Alarm Armed: " + tmpAlarm.IsEnabled.ToString());
-                                            Console.WriteLine("Alarm Triggered: " + tmpAlarm.IsTriggered.ToString());
                                             Console.WriteLine("Alarm Location: " + tmpAlarm.Location);
                                             Console.WriteLine("Alarm Sensitivity: " + tmpAlarm.Sensitivity);
                                         }
@@ -541,6 +539,28 @@ namespace Mes
                                             sensors[z].SimulationSensor.Reading = reading;
                                         }
                                     }
+                                break;
+                            case ("STATUS"):
+                                Console.WriteLine("======================================================================");
+                                Console.WriteLine("=====================      Sensor Status      ========================");
+                                Console.WriteLine("======================================================================");
+                                foreach (Sensor tmpSensor in sensors)
+                                {
+                                    Console.WriteLine("Sensor ID: " + tmpSensor.Id + " Sensor Type: " + tmpSensor.Type);
+                                    Console.WriteLine("Location: " + tmpSensor.Location);
+                                    Console.WriteLine("Triggered: " + tmpSensor.IsTriggered.ToString());
+                                    Console.WriteLine("----------------------------------------------------------------------");
+                                }
+                                Console.WriteLine("======================================================================");
+                                Console.WriteLine("=====================      Alarm Status       ========================");
+                                Console.WriteLine("======================================================================");
+                                foreach (Alarm tmpAlarm in alarms)
+                                {
+                                    Console.WriteLine("Alarm ID: " + tmpAlarm.Id + " Alarm Type: " + tmpAlarm.Type);
+                                    Console.WriteLine("Location: " + tmpAlarm.Location);
+                                    Console.WriteLine("Triggered: " + tmpAlarm.IsTriggered.ToString());
+                                    Console.WriteLine("----------------------------------------------------------------------");
+                                }
                                 break;
                             default:    // Not any of the actions add, edit, view, trigger, etc. Error.
                                 break;

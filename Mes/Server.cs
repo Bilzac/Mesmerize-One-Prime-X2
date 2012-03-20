@@ -76,11 +76,17 @@ namespace Mes
             Console.WriteLine("Welcome to Mesmerize One Prime X2");
             Console.WriteLine("");
             Console.WriteLine("Valid commands are:");
+            Console.WriteLine("     ADDUSER");
+            Console.WriteLine("     CHANGEPASS");
             Console.WriteLine("     ADD");
             Console.WriteLine("     REMOVE");
             Console.WriteLine("     EDIT");
             Console.WriteLine("     VIEW");
             Console.WriteLine("     TEST");
+            Console.WriteLine("     STATUS");
+            Console.WriteLine("     ENABLESIM");
+            Console.WriteLine("     DISABLESIM");
+            Console.WriteLine("     CHANGEREADING");
             Console.WriteLine("     EXIT");
             Console.WriteLine("");
             while (online)
@@ -132,14 +138,51 @@ namespace Mes
                         if (MessageQueue.Exists(queueName))
                         {
                             // "id,deviceType(magnetic),category(sensor),enable,threshold,location"
+                            
                             terminalLog.appendLog("Add Sensor Command Executed.");
                             mesMsg.type = "ADD";
+                            
                             Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
-                            deviceCategory = Console.ReadLine();
-                            Console.WriteLine("Please enter the type of the device.\n(MAGNETIC|MOTION|FLOOD|SMOKE|LIGHT|SIREN|VIDEO)");
-                            deviceType = Console.ReadLine();
-                            Console.WriteLine("Please enter the if the device should be enabled.\n(TRUE|FALSE)");
-                            isEnable = Console.ReadLine();
+                            deviceCategory = Console.ReadLine().ToUpper();
+                            while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM") {
+                                Console.WriteLine("Please enter the valid category of the device.\n(SENSOR|MONITOR|ALARM)");
+                                deviceCategory = Console.ReadLine().ToUpper();
+                            }
+
+                            if (deviceCategory == "SENSOR") {
+                                Console.WriteLine("Please enter the type of the device.\n(MAGNETIC|MOTION|FLOOD|SMOKE)");
+                                deviceType = Console.ReadLine().ToUpper();
+                                while (deviceType != "MAGNETIC" && deviceType != "MOTION" && deviceType != "FLOOD" && deviceType != "SMOKE")
+                                {
+                                    Console.WriteLine("Please enter the valid type of the device.\n(MAGNETIC|MOTION|FLOOD|SMOKE|LIGHT|SIREN|VIDEO)");
+                                    deviceType = Console.ReadLine().ToUpper();
+                                }
+                            } else if (deviceCategory == "ALARM") {
+                                Console.WriteLine("Please enter the type of the device.\n(LIGHT|SIREN)");
+                                deviceType = Console.ReadLine().ToUpper();
+                                while (deviceType != "LIGHT" && deviceType != "SIREN")
+                                {
+                                    Console.WriteLine("Please enter the valid type of the device.\n(LIGHT|SIREN)");
+                                    deviceType = Console.ReadLine().ToUpper();
+                                }
+                            } else {
+                                Console.WriteLine("Please enter the type of the device.\n(VIDEO)");
+                                deviceType = Console.ReadLine().ToUpper();
+                                while(deviceType != "VIDEO") {
+                                    Console.WriteLine("Please enter the valid type of the device.\n(VIDEO)");
+                                    deviceType = Console.ReadLine().ToUpper();
+                                }
+                            }
+
+                            
+                            Console.WriteLine("Please enter if the device should be enabled.\n(TRUE|FALSE)");
+                            isEnable = Console.ReadLine().ToUpper();
+                            while (isEnable != "TRUE" && isEnable != "FALSE")
+                            {
+                                Console.WriteLine("Please enter if the device should be enabled.\n(TRUE|FALSE)");
+                                isEnable = Console.ReadLine().ToUpper();
+                            }
+
                             Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                             threshold = Console.ReadLine();
                             while (!(int.TryParse(threshold, out tmp)))
@@ -161,8 +204,15 @@ namespace Mes
                         Console.WriteLine("Edit Device:");
                         terminalLog.appendLog("Edit Sensor Command Executed");
                         mesMsg.type = "EDIT";
+
                         Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
-                        deviceCategory = Console.ReadLine();
+                        deviceCategory = Console.ReadLine().ToUpper();
+                        while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM")
+                        {
+                            Console.WriteLine("Please enter the valid category of the device.\n(SENSOR|MONITOR|ALARM)");
+                            deviceCategory = Console.ReadLine().ToUpper();
+                        }
+
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
                         while (!(int.TryParse(deviceId, out tmp))) 
@@ -170,8 +220,15 @@ namespace Mes
                             Console.WriteLine("Please enter a valid id of the device");
                             deviceId = Console.ReadLine();
                         }
-                        Console.WriteLine("Please enter the if the device should be enabled.\n(TRUE|FALSE)");
-                        isEnable = Console.ReadLine();
+
+                        Console.WriteLine("Please enter if the device should be enabled.\n(TRUE|FALSE)");
+                        isEnable = Console.ReadLine().ToUpper();
+                        while (isEnable != "TRUE" && isEnable != "FALSE")
+                        {
+                            Console.WriteLine("Please enter if the device should be enabled.\n(TRUE|FALSE)");
+                            isEnable = Console.ReadLine().ToUpper();
+                        }
+
                         Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                         threshold = Console.ReadLine();
                         while (!(int.TryParse(threshold, out tmp)))
@@ -188,10 +245,22 @@ namespace Mes
                         Console.WriteLine("Remove Device:");
                         terminalLog.appendLog("Remove Sensor Command Executed");
                         mesMsg.type = "REMOVE";
+
                         Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
-                        deviceCategory = Console.ReadLine();
+                        deviceCategory = Console.ReadLine().ToUpper();
+                        while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM")
+                        {
+                            Console.WriteLine("Please enter the valid category of the device.\n(SENSOR|MONITOR|ALARM)");
+                            deviceCategory = Console.ReadLine().ToUpper();
+                        }
+
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
+                        while (!(int.TryParse(deviceId, out tmp))) 
+                        {
+                            Console.WriteLine("Please enter a valid id of the device");
+                            deviceId = Console.ReadLine();
+                        }
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
                         queue.Send(mesMsg);
                         break;
@@ -199,10 +268,23 @@ namespace Mes
                         Console.WriteLine("Viewing Devices");
                         terminalLog.appendLog("View Sensor Command Executed");
                         mesMsg.type = "VIEW";
+
                         Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
-                        deviceCategory = Console.ReadLine();
+                        deviceCategory = Console.ReadLine().ToUpper();
+                        while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM")
+                        {
+                            Console.WriteLine("Please enter the valid category of the device.\n(SENSOR|MONITOR|ALARM)");
+                            deviceCategory = Console.ReadLine().ToUpper();
+                        }
+
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
+                        while (!(int.TryParse(deviceId, out tmp)) && deviceId != "") 
+                        {
+                            Console.WriteLine("Please enter a valid id of the device");
+                            deviceId = Console.ReadLine();
+                        }
+
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
                         queue.Send(mesMsg);
                         break;
@@ -257,9 +339,19 @@ namespace Mes
                         {
                             mesMsg.type = "CHANGEREADING";
                             Console.WriteLine("Please enter the id of the sensor.");
-                            String id = Console.ReadLine();
-                            Console.WriteLine("Please enter it's new reading.");
-                            String reading = Console.ReadLine();
+                            string id = Console.ReadLine();
+                            while (!(int.TryParse(id, out tmp)))
+                            {
+                                Console.WriteLine("Please enter a valid id the sensor.");
+                                id = Console.ReadLine();
+                            }
+                            Console.WriteLine("Please enter the a reading of the sensor.");
+                            string reading = Console.ReadLine();
+                            while (!(int.TryParse(reading, out tmp)))
+                            {
+                                Console.WriteLine("Please enter the a valid reading of the sensor.");
+                                reading = Console.ReadLine();
+                            }
                             mesMsg.message = id + "," + reading;
                             queue.Send(mesMsg);
                         }
@@ -267,6 +359,11 @@ namespace Mes
                         {
                             Console.WriteLine("Terminal - Queue .\\security not Found");
                         }
+                        break;
+                    case "STATUS":
+                        mesMsg.type = "STATUS";
+                        mesMsg.message = "";
+                        queue.Send(mesMsg);
                         break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
@@ -277,11 +374,17 @@ namespace Mes
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         terminalLog.appendLog("Invalid Command Entered: " + command);
                         Console.WriteLine("Valid commands are:");
+                        Console.WriteLine("     ADDUSER");
+                        Console.WriteLine("     CHANGEPASS");
                         Console.WriteLine("     ADD");
                         Console.WriteLine("     REMOVE");
                         Console.WriteLine("     EDIT");
                         Console.WriteLine("     VIEW");
                         Console.WriteLine("     TEST");
+                        Console.WriteLine("     STATUS");
+                        Console.WriteLine("     ENABLESIM");
+                        Console.WriteLine("     DISABLESIM");
+                        Console.WriteLine("     CHANGEREADING");
                         Console.WriteLine("     EXIT");
                         break;
                 }
