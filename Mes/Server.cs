@@ -89,6 +89,7 @@ namespace Mes
                 string threshold = null;
                 string location = null;
                 string deviceId = null;
+                int tmp;
 
                 switch (command.ToUpper())
                 {
@@ -107,6 +108,11 @@ namespace Mes
                             isEnable = Console.ReadLine();
                             Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                             threshold = Console.ReadLine();
+                            while (!(int.TryParse(threshold, out tmp)))
+                            {
+                                Console.WriteLine("Please enter a valid (THRESHOLD|SENSITIVITY) number setting.");
+                                threshold = Console.ReadLine();
+                            }
                             Console.WriteLine("Please enter the location of the device.");
                             location = Console.ReadLine();
                             mesMsg.message = "0," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;
@@ -125,10 +131,20 @@ namespace Mes
                         deviceCategory = Console.ReadLine();
                         Console.WriteLine("Please enter the id of the device");
                         deviceId = Console.ReadLine();
+                        while (!(int.TryParse(deviceId, out tmp))) 
+                        {
+                            Console.WriteLine("Please enter a valid id of the device");
+                            deviceId = Console.ReadLine();
+                        }
                         Console.WriteLine("Please enter the if the device should be enabled.\n(TRUE|FALSE)");
                         isEnable = Console.ReadLine();
                         Console.WriteLine("Please enter the (THRESHOLD|SENSITIVITY) number setting.");
                         threshold = Console.ReadLine();
+                        while (!(int.TryParse(threshold, out tmp)))
+                        {
+                            Console.WriteLine("Please enter a valid (THRESHOLD|SENSITIVITY) number setting.");
+                            threshold = Console.ReadLine();
+                        }
                         Console.WriteLine("Please enter the location of the device.");
                         location = Console.ReadLine();
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;

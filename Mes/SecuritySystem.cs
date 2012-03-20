@@ -70,7 +70,6 @@ namespace Mes
                     {
                         Message msg = queue.Receive();
                         MesMessage mesMessage = (MesMessage)msg.Body;
-                        Console.WriteLine("Message Received!");
 
                         int deviceId;
                         string deviceCategory;
