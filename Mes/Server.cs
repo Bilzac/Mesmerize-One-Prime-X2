@@ -336,7 +336,7 @@ namespace Mes
                     Console.WriteLine("Server shutting down!");
                     terminalThread.Abort();
                     running = false;
-                    Thread.Sleep(2000);   
+                    //Thread.Sleep(2000);   
                     break;
                 }
             }
