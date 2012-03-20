@@ -1,7 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Messaging;
+using System.Threading;
+
 namespace Mes{
+    public class SimulationSensor
+    {
+        private int id;
+        private int reading;
+        private int frequency;
+        private bool on;
+        //int batterylevel
+
+        public SimulationSensor()
+        {
+            reading = 0;
+            frequency = 2000;
+            on = true;
+        }
+
+        public void SimulationRun()
+        {
+            //Send Message To SecuritySystem
+            while (on)
+            {
+                if (MessageQueue.Exists(GlobalVariables.queueName))
+                {
+                    MessageQueue queue = new MessageQueue(GlobalVariables.queueName);
+                    MesMessage mesMsg = new MesMessage();
+                    mesMsg.type = "READING";
+                    // "id,reading"
+                    mesMsg.message = Convert.ToString(id) + "," + Convert.ToString(reading);
+                    queue.Send(mesMsg);
+                }
+                System.Threading.Thread.Sleep(frequency);
+            }
+        }
+
+        public int Reading
+        {
+            get
+            {
+                return reading;
+            }
+            set
+            {
+                reading = value;
+            }
+        }
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+
+        public bool On
+        {
+            set
+            {
+                on = value;
+            }
+        }
+    }
+    
+    
+    
     public abstract class Sensor : IObservable<Sensor>
     {
         bool isEnabled;         // The sensor can be triggered
@@ -11,6 +81,7 @@ namespace Mes{
         int sensorId;           // unique id of the sensor
         int parentId;           // id of the system it is under (security)
         int threshold;
+        SimulationSensor sim;
 
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;
@@ -19,6 +90,7 @@ namespace Mes{
         public Sensor()
         {
            observers = new List<IObserver<Sensor>>();
+           sim = new SimulationSensor();
         }
 
         private List<IObserver<Sensor>> observers;
@@ -87,15 +159,18 @@ namespace Mes{
 
                     // log the trigger event
                     Mes.MesMessage message = new Mes.MesMessage();
-                    message.type = "log";
+                    message.type = "LOG";
                     message.message = string.Format("{0} Sensor {1} was triggered.", this.Type, this.Id);
                     queue.Send(message);
 
+                    Message triggerMessage = new Message();
+                    triggerMessage.Priority = MessagePriority.Highest;
                     // Send a message to the security system to trigger all alarms in the same location.
                     message = new Mes.MesMessage();
-                    message.type = "trigger";
-                    message.message = string.Format(",,alarm,true,,{0}", this.Location);
-                    queue.Send(message);
+                    message.type = "TRIGGER";
+                    message.message = "-1," + this.Location;
+                    triggerMessage.Body = message;
+                    queue.Send(triggerMessage);
                 }
                 else
                 {
@@ -129,6 +204,15 @@ namespace Mes{
             }
         }
 
+        public void ThresholdCheck(int reading)
+        {
+            if (reading > Threshold)
+            {
+                Thread TriggerThread = new Thread(new ThreadStart(Trigger));
+                TriggerThread.Start();
+            }
+        }
+
         //********************* ACCESSORS *******************//
 
         // Sensor type Accessor
@@ -154,6 +238,7 @@ namespace Mes{
             set
             {
                 sensorId = value;
+                sim.Id = sensorId;
             }
         } 
         public bool IsEnabled
@@ -209,6 +294,14 @@ namespace Mes{
             set
             {
                 threshold = value;
+            }
+        }
+
+        public SimulationSensor SimulationSensor
+        {
+            get
+            {
+                return sim;
             }
         }
 

@@ -224,6 +224,50 @@ namespace Mes
                             Console.WriteLine("Terminal - Queue .\\security not Found");
                         }
                         break;
+                    case "ENABLESIM":
+                        Console.WriteLine("Starting Simulation.");
+                        terminalLog.appendLog("EnableSim");
+                        if (MessageQueue.Exists(queueName))
+                        {
+                                mesMsg.type = "ENABLESIM";
+                                mesMsg.message = "";
+                                queue.Send(mesMsg);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Terminal - Queue .\\security not Found");
+                        }
+                        break;
+                    case "DISABLESIM":
+                        Console.WriteLine("Stopping Simulation.");
+                        terminalLog.appendLog("EnableSim");
+                        if (MessageQueue.Exists(queueName))
+                        {
+                            mesMsg.type = "DISABLESIM";
+                            mesMsg.message = "";
+                            queue.Send(mesMsg);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Terminal - Queue .\\security not Found");
+                        }
+                        break;
+                    case "CHANGEREADING":
+                        if (MessageQueue.Exists(queueName))
+                        {
+                            mesMsg.type = "CHANGEREADING";
+                            Console.WriteLine("Please enter the id of the sensor.");
+                            String id = Console.ReadLine();
+                            Console.WriteLine("Please enter it's new reading.");
+                            String reading = Console.ReadLine();
+                            mesMsg.message = id + "," + reading;
+                            queue.Send(mesMsg);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Terminal - Queue .\\security not Found");
+                        }
+                        break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
                         terminalLog.appendLog("Connection to server has been terminated by the user.");

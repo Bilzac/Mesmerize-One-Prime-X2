@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Messaging;
+using System.Threading;
+
 
 
 namespace Mes
@@ -28,6 +30,7 @@ namespace Mes
         DB_Manager mesDB = new DB_Manager();
 
         private int id;
+        private List<Thread> simulationThreads = new List<Thread>();
 
         public SecuritySystem()
         {
@@ -449,40 +452,15 @@ namespace Mes
                             case ("TRIGGER"):
                                 tmpParams = GetParams(mesMessage);
                                 deviceId = Convert.ToInt16(tmpParams.ElementAt(0));
-                                deviceCategory = tmpParams.ElementAt(1).ToUpper();
-                                deviceType = tmpParams.ElementAt(2).ToUpper();
-                                enableParam = tmpParams.ElementAt(3).ToUpper();
-                                if (enableParam == "true") {
-                                    isEnable = true;
-                                } else {
-                                    isEnable = false;
-                                }
-                                threshold = Convert.ToInt16(tmpParams.ElementAt(4));
-                                location = tmpParams.ElementAt(5).ToUpper();
-
+                                location = tmpParams.ElementAt(1).ToUpper();
+                                deviceCategory = "ALARM";
                                 switch (deviceCategory) {
-                                    case "SENSOR":
-                                        foreach (Sensor tmpSensor in sensors)
-                                        {
-                                            if (tmpSensor.Id == deviceId) {
-                                                if (tmpSensor.Threshold > threshold) {
-                                                    // Log trigger messages that don't have
-                                                    securityLogger.appendLog(
-                                                        string.Format("Sensor {0} trigger is below threshold: ignored", deviceId));
-                                                } else {    // The trigger passed the sensitivity threshold, so trigger
-                                                    tmpSensor.Trigger();
-                                                    index=i;
-                                                    break;
-                                                }
-                                            }
-                                            i++;
-                                        }
-                                        break;
                                     case "ALARM":
                                         foreach (Alarm tmpAlarm in alarms)
                                         {
-                                            if (deviceId.Equals(null) && tmpAlarm.Location == location){
+                                            if (deviceId == -1 && tmpAlarm.Location.Equals(location)){
                                                 tmpAlarm.Trigger();     // Trigger all alarms in the location of a tripped sensor
+                                                index = 1;
                                             }
                                             else if (tmpAlarm.Id == deviceId) {
                                                 tmpAlarm.Trigger();
@@ -513,8 +491,56 @@ namespace Mes
                                 }
                                 else
                                 {
-                                    securityLogger.appendLog(string.Format("Failed to add {0}", deviceCategory));
+                                    securityLogger.appendLog(string.Format("Failed to trigger {0}", deviceCategory));
                                 }
+                                break;
+                            case ("READING"):
+                                tmpParams = GetParams(mesMessage);
+                                if(tmpParams.Count == 2)
+                                {
+                                    int id = Convert.ToInt16(tmpParams.ElementAt(0));
+                                    for (int z = 0; z < sensors.Count; z++) 
+                                    {
+                                        if (sensors[z].Id == id)
+                                        {
+                                            int reading = Convert.ToInt32(tmpParams.ElementAt(1));
+                                            sensors[z].ThresholdCheck(reading);
+                                        }
+                                    }
+  
+                                }
+                                //Thread thresholdCheckThread = new Thread(new ThreadStart(simSensor.ThresholdCheck(reading)));
+                                //thresholdCheckThread.Start(reading);
+                                break;
+                            case ("ENABLESIM"):
+                                for (int z = 0; z < Sensors.Count; z++)
+                                {
+                                    SimulationSensor sim = sensors.ElementAt(z).SimulationSensor;
+                                    sim.On = true;
+                                    Thread simulationThread = new Thread(new ThreadStart(sim.SimulationRun));
+                                    //simulationThreads.Add(simulationThread);
+                                    simulationThread.Start();
+                                }
+                                break;
+                            case ("DISABLESIM"):
+                                for (int z = 0; z < Sensors.Count; z++)
+                                {
+                                    Sensors[z].SimulationSensor.On = false;
+                                    //simulationThreads.ElementAt(z).Abort();
+                                    //simulationThreads.RemoveAt(z);
+                                }
+                                break;
+                            case ("CHANGEREADING"):
+                                tmpParams = GetParams(mesMessage);
+                                int simId = Convert.ToInt16(tmpParams.ElementAt(0));
+                                    for (int z = 0; z < sensors.Count; z++) 
+                                    {
+                                        if (sensors[z].Id == simId)
+                                        {
+                                            int reading = Convert.ToInt32(tmpParams.ElementAt(1));
+                                            sensors[z].SimulationSensor.Reading = reading;
+                                        }
+                                    }
                                 break;
                             default:    // Not any of the actions add, edit, view, trigger, etc. Error.
                                 break;
