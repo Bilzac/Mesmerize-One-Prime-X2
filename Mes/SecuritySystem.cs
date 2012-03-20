@@ -7,10 +7,14 @@ using System.Messaging;
 
 namespace Mes
 {
+    // Global to refer to the queue name of the Security system to send it messages
+    public static class GlobalVariables{
+        public static string queueName = @".\Private$\security";
+    }
     // object to fill a message with sensor information
     public class MesMessage {
         public string type;             // Add, edit, remove, or view
-        public string messageType;      // The type may indicate what parameter is changing
+        public string message;      // written in the form "id,deviceType(magnetic),category(sensor),enable,threshold,location"
     };
 
     class SecuritySystem : GenericSystem

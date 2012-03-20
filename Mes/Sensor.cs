@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Messaging;
 namespace Mes{
     public abstract class Sensor : IObservable<Sensor>
     {
@@ -30,6 +30,21 @@ namespace Mes{
                 isEnabled = true;
                 if (this.EnableChanged != null)
                     this.EnableChanged(this, new EventArgs());
+
+                if (MessageQueue.Exists(GlobalVariables.queueName))
+                {
+                    MessageQueue queue = new MessageQueue(GlobalVariables.queueName);
+
+                    // log the enable event
+                    Mes.MesMessage message = new Mes.MesMessage();
+                    message.type = "log";
+                    message.message = string.Format("{0} Sensor {1} was enabled.", this.Type, this.Id);
+                    queue.Send(message);
+                }
+                else
+                {
+                    Console.WriteLine("Trigger - no Security message queue available");
+                }
             }
         }
 
@@ -40,6 +55,21 @@ namespace Mes{
                 isEnabled = false;
                 if (this.EnableChanged != null)
                     this.EnableChanged(this, new EventArgs());
+
+                if (MessageQueue.Exists(GlobalVariables.queueName))
+                {
+                    MessageQueue queue = new MessageQueue(GlobalVariables.queueName);
+
+                    // log the enable event
+                    Mes.MesMessage message = new Mes.MesMessage();
+                    message.type = "log";
+                    message.message = string.Format("{0} Sensor {1} was disabled.", this.Type, this.Id);
+                    queue.Send(message);
+                }
+                else
+                {
+                    Console.WriteLine("Trigger - no Security message queue available");
+                }
             }
         }
 
@@ -48,8 +78,29 @@ namespace Mes{
             if (!isTriggered)
             {
                 isTriggered = true;
+                // Call event handler is fired if it exists
                 if (this.TriggerChanged != null)
                     this.TriggerChanged(this, new EventArgs());
+
+                if (MessageQueue.Exists(GlobalVariables.queueName)){
+                    MessageQueue queue = new MessageQueue(GlobalVariables.queueName);
+
+                    // log the trigger event
+                    Mes.MesMessage message = new Mes.MesMessage();
+                    message.type = "log";
+                    message.message = string.Format("{0} Sensor {1} was triggered.", this.Type, this.Id);
+                    queue.Send(message);
+
+                    // Send a message to the security system to trigger all alarms in the same location.
+                    message = new Mes.MesMessage();
+                    message.type = "trigger";
+                    message.message = string.Format(",,alarm,true,,{0}", this.Location);
+                    queue.Send(message);
+                }
+                else
+                {
+                    Console.WriteLine("Trigger - no Security message queue available");
+                }
             }
         }
 
@@ -60,6 +111,21 @@ namespace Mes{
                 isTriggered = false;
                 if (this.TriggerChanged != null)
                     this.TriggerChanged(this, new EventArgs());
+
+                if (MessageQueue.Exists(GlobalVariables.queueName))
+                {
+                    MessageQueue queue = new MessageQueue(GlobalVariables.queueName);
+
+                    // log the enable event
+                    Mes.MesMessage message = new Mes.MesMessage();
+                    message.type = "log";
+                    message.message = string.Format("{0} Sensor {1} was untriggered.", this.Type, this.Id);
+                    queue.Send(message);
+                }
+                else
+                {
+                    Console.WriteLine("Trigger - no Security message queue available");
+                }
             }
         }
 
