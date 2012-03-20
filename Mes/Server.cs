@@ -7,18 +7,19 @@ using System.Messaging;
 
 namespace Mes
 {
-
     public class Terminal
     {
         // Needed for sending messages to the security system to handle
         string queueName = @".\Private$\security";
 
+        //Terminal Attributes
         int authentication = -1;
         bool online = true;
         DB_Manager mesDB;
         Logger terminalLog;
         TestHarness terminalTest;
 
+        //User Credentials
         String activeUserName;
         String activePassword;
 
@@ -42,17 +43,23 @@ namespace Mes
             Console.WriteLine(outString);
         }
 
+        // Terminal Process
         public void runTerminal()
         {
+            //Connects to Logging and database
             terminalLog = new Logger();
             mesDB = new DB_Manager();
             mesDB.SetConnection();
             terminalTest = new TestHarness();
+
             Console.WriteLine("Intializing Security Server.");
             terminalLog.appendLog("Security Server Initializating");
+            
+            //Set up message passing to Security System
             MessageQueue queue = new MessageQueue(queueName);
             MesMessage mesMsg = new MesMessage();
 
+            //User Login Verification
             while (authentication == -1)
             {
                 Console.WriteLine("Please Enter Your Username");
@@ -66,6 +73,7 @@ namespace Mes
                     terminalLog.appendLog("Warning invalid credentials were entered!");
                 }
             }
+            //Terminal Startup
             terminalLog.appendLog("Connection to the server has been established.");
             Console.WriteLine("------------_________---------------");
             Console.WriteLine("------------|       |---------------");
@@ -92,9 +100,13 @@ namespace Mes
             Console.WriteLine("     CHANGEREADING");
             Console.WriteLine("     EXIT");
             Console.WriteLine("");
+            //Terminal Process
             while (online)
             {
+                //Command Retriever
                 String command = Console.ReadLine();
+
+                //Input Parameters
                 string deviceType = null;
                 string deviceCategory = null;
                 string isEnable = null;
@@ -103,24 +115,31 @@ namespace Mes
                 string deviceId = null;
                 int tmp;
 
+                //Command Decoder
                 switch (command.ToUpper())
                 {
                     case "CHANGEPASS":
-                            Console.WriteLine("Enter Your Password");
-                            string oldPass = Console.ReadLine();
-                            if (oldPass.Equals(activePassword))
-                            {
-                                Console.WriteLine("Enter New Password");
-                                string password = Console.ReadLine();
-                                mesDB.ChangePassword(activeUserName, password);
-                                Console.WriteLine("Password Changed");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Incorrect Password");
-                            }
+                        //-----------------------------------------------------------------------------------
+                        //Change Pass Command
+                        //-----------------------------------------------------------------------------------
+                        Console.WriteLine("Enter Your Password");
+                        string oldPass = Console.ReadLine();
+                        if (oldPass.Equals(activePassword))
+                        {
+                            Console.WriteLine("Enter New Password");
+                            string password = Console.ReadLine();
+                            mesDB.ChangePassword(activeUserName, password);
+                            Console.WriteLine("Password Changed");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Incorrect Password");
+                        }
                         break;
                     case "ADDUSER":
+                        //-----------------------------------------------------------------------------------
+                        // Add User Command
+                        //-----------------------------------------------------------------------------------
                         if (authentication == 1)
                         {
                             Console.WriteLine("[New User] Please Enter Username");
@@ -137,11 +156,12 @@ namespace Mes
                         }
                         break;
                     case "ADD":
+                        //-----------------------------------------------------------------------------------
+                        // Add Device Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Add Device:");
                         if (MessageQueue.Exists(queueName))
                         {
-                            // "id,deviceType(magnetic),category(sensor),enable,threshold,location"
-                            
                             terminalLog.appendLog("Add Sensor Command Executed.");
                             mesMsg.type = "ADD";
                             
@@ -195,6 +215,7 @@ namespace Mes
                             }
                             Console.WriteLine("Please enter the location of the device.");
                             location = Console.ReadLine();
+                            
                             mesMsg.message = "0," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;
                             queue.Send(mesMsg);
                         }
@@ -204,6 +225,9 @@ namespace Mes
                         }
                         break;
                     case "EDIT":
+                        //-----------------------------------------------------------------------------------
+                        // Edit Device Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Edit Device:");
                         terminalLog.appendLog("Edit Sensor Command Executed");
                         mesMsg.type = "EDIT";
@@ -241,10 +265,14 @@ namespace Mes
                         }
                         Console.WriteLine("Please enter the location of the device.");
                         location = Console.ReadLine();
+                        
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + threshold + "," + location;
                         queue.Send(mesMsg);
                         break;
                     case "REMOVE":
+                        //-----------------------------------------------------------------------------------
+                        //Remove Device Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Remove Device:");
                         terminalLog.appendLog("Remove Sensor Command Executed");
                         mesMsg.type = "REMOVE";
@@ -264,10 +292,14 @@ namespace Mes
                             Console.WriteLine("Please enter a valid id of the device");
                             deviceId = Console.ReadLine();
                         }
+                       
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
                         queue.Send(mesMsg);
                         break;
                     case "VIEW":
+                        //-----------------------------------------------------------------------------------
+                        //View Device Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Viewing Devices");
                         terminalLog.appendLog("View Sensor Command Executed");
                         mesMsg.type = "VIEW";
@@ -292,6 +324,9 @@ namespace Mes
                         queue.Send(mesMsg);
                         break;
                     case "TEST":
+                        //-----------------------------------------------------------------------------------
+                        //Test Command 
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Please specify the file path to the test file.");
                         terminalLog.appendLog("Executing Test Simulation of Security System");
                         terminalTest.File = Console.ReadLine();
@@ -310,6 +345,9 @@ namespace Mes
                         }
                         break;
                     case "ENABLESIM":
+                        //-----------------------------------------------------------------------------------
+                        //Enable Simulator Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Starting Simulation.");
                         terminalLog.appendLog("EnableSim");
                         if (MessageQueue.Exists(queueName))
@@ -324,6 +362,9 @@ namespace Mes
                         }
                         break;
                     case "DISABLESIM":
+                        //-----------------------------------------------------------------------------------
+                        //Disable Simulator Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Stopping Simulation.");
                         terminalLog.appendLog("DisableSim");
                         if (MessageQueue.Exists(queueName))
@@ -338,6 +379,9 @@ namespace Mes
                         }
                         break;
                     case "CHANGEREADING":
+                        //-----------------------------------------------------------------------------------
+                        //Change reading value of sensors command
+                        //-----------------------------------------------------------------------------------
                         if (MessageQueue.Exists(queueName))
                         {
                             mesMsg.type = "CHANGEREADING";
@@ -355,6 +399,7 @@ namespace Mes
                                 Console.WriteLine("Please enter the a valid reading of the sensor.");
                                 reading = Console.ReadLine();
                             }
+                            
                             mesMsg.message = id + "," + reading;
                             queue.Send(mesMsg);
                         }
@@ -364,23 +409,34 @@ namespace Mes
                         }
                         break;
                     case "STATUS":
+                        //-----------------------------------------------------------------------------------
+                        //Display Status Command
+                        //-----------------------------------------------------------------------------------
                         mesMsg.type = "STATUS";
                         mesMsg.message = "";
                         queue.Send(mesMsg);
                         break;
                     case "ARM":
+                        //-----------------------------------------------------------------------------------
+                        //Arm Devices Command
+                        //-----------------------------------------------------------------------------------
                         mesMsg.type = "ARM";
                         mesMsg.message = "";
                         queue.Send(mesMsg);
                         break;
                     case "DISARM":
+                        //-----------------------------------------------------------------------------------
+                        //Disarm Devices Command
+                        //-----------------------------------------------------------------------------------
                         mesMsg.type = "DISARM";
                         mesMsg.message = "";
                         queue.Send(mesMsg);
                         break;
                     case "UNTRIGGER":
+                        //-----------------------------------------------------------------------------------
+                        //Untrigger Device Command
+                        //-----------------------------------------------------------------------------------
                         mesMsg.type = "UNTRIGGER";
-
                         Console.WriteLine("Please enter the category of the device.\n(SENSOR|MONITOR|ALARM)");
                         deviceCategory = Console.ReadLine().ToUpper();
                         while (deviceCategory != "SENSOR" && deviceCategory != "MONITOR" && deviceCategory != "ALARM") {
@@ -395,15 +451,22 @@ namespace Mes
                             Console.WriteLine("Please enter a valid id of the device");
                             deviceId = Console.ReadLine();
                         }
+                        
                         mesMsg.message = deviceId + "," + deviceCategory;
                         queue.Send(mesMsg);
                         break;
                     case "EXIT":
+                        //-----------------------------------------------------------------------------------
+                        //Exit Terminal Command
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Command Terminal shutting down!");
                         terminalLog.appendLog("Connection to server has been terminated by the user.");
                         online = false;
                         break;
                     default:
+                        //-----------------------------------------------------------------------------------
+                        //Displays the help to the system
+                        //-----------------------------------------------------------------------------------
                         Console.WriteLine("Error: Invalid command " + command + " was entered!");
                         terminalLog.appendLog("Invalid Command Entered: " + command);
                         Console.WriteLine("Valid commands are:");
@@ -431,11 +494,13 @@ namespace Mes
 
     class Server
     {
+        //Connetion to database, systems, and threads.
         DB_Manager mesDB;
         List<GenericSystem> systemList;
         Thread terminalThread;
         List<Thread> systemThreads;
 
+        //Runs the Server
         bool running;
 
         public Server()
@@ -444,6 +509,7 @@ namespace Mes
             mesDB = new DB_Manager();
             systemThreads = new List<Thread>();
 
+            // Initializes the Database Tables
             mesDB.SetConnection();
             mesDB.CreateCredentialsTable();
             mesDB.CreateSystemTable();
@@ -451,6 +517,7 @@ namespace Mes
             mesDB.CreateMonitorTable();
             mesDB.CreateAlarmTable();
 
+            //Initializes the Database Table
             systemList = mesDB.GetSystems();
             if (systemList.Count == 0)
             {
@@ -458,6 +525,7 @@ namespace Mes
             }
         }
 
+        // Run Instance of the Server
         public void Run()
         {
             running = true;
@@ -470,17 +538,18 @@ namespace Mes
             {
                 Thread.Sleep(1000);
 
+                //Drives the Terminal of the server
                 if (!serverTerminal.terminalState())
                 {
                     Console.WriteLine("Server shutting down!");
                     terminalThread.Abort();
-                    running = false;
-                    //Thread.Sleep(2000);   
+                    running = false;   
                     break;
                 }
             }
         }
 
+        //Initializes the Security System
         public void AddSecuritySystem()
         {
             SecuritySystem securitySystem = new SecuritySystem();
@@ -494,6 +563,7 @@ namespace Mes
             }
         }
 
+        //Starts the Systems that have been initialized
         public void startSystems()
         {
             for (int i = 0; i < systemList.Count; i++)
