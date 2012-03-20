@@ -20,6 +20,7 @@ namespace Mes
             connectionString = string.Format("Server={0};Database={1};UID={2};Password={3}", server, database, user, password);
         }
 
+        //*******************************Authentication*******************************//
         public int checkAuthentication(String username, String password)
         {
 
@@ -88,6 +89,8 @@ namespace Mes
             return false;
         }
 
+        //*******************************Sensors*******************************//
+        
 
         public bool createSensorTable()
         {
@@ -97,15 +100,11 @@ namespace Mes
 
             try
             {
-
                 sqlConnection.Open();
-
-                sqlCmd.CommandText = "Create Table IF NOT EXISTS " +
-                                        "Sensors ( id int AUTO_INCREMENT, isEnable bit, isTriggered bit, location varchar(255), sensorType varchar(255)," + 
-                                        "canTrigger bit, parentId int NOT NULL, PRIMARY KEY(id), FOREIGN KEY (parentId) REFERENCES SYSTEMS(systemId) )";
+                sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS " +
+                                        "SENSORS ( ID INT AUTO_INCREMENT, ISENABLE BOOL, THRESHOLD INT, LOCATION VARCHAR(255), TYPE VARCHAR(255) NOT NULL," + 
+                                        " PARENTID INT NOT NULL, PRIMARY KEY(ID), FOREIGN KEY (PARENTID) REFERENCES SYSTEMS(ID) )";
                 sqlCmd.ExecuteNonQuery();
-
-                return true;
             }
             catch (Exception e)
             {
@@ -119,38 +118,17 @@ namespace Mes
             return false;
         }
 
-        public int addNewSensor(int type ,int parentId)
-        {
-            return updateSensorTableRow(type, parentId, null);
-        }
-
-        public int updateSensor(Sensor sensor)
-        {
-            return updateSensorTableRow(-1, -1, sensor);
-        }
-
-        private int updateSensorTableRow(int type, int parentId, Sensor sensor)
+        private int AddSensor(Sensor sensor)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
             int id = -1;
             try
             {
-
                 sqlConnection.Open();
-
-                if (sensor != null)
-                {
-                    sqlCmd.CommandText = "UPDATE SENSORS " +
-                                            "SET isEnable=" + sensor.IsEnabled + ", isTriggered=" + sensor.IsTriggered + "  , location= \"" + sensor.Location + "\" " +
-                                            "WHERE id=" + sensor.Id + ";";
-                }
-                else
-                {
-                    sqlCmd.CommandText = "INSERT INTO " +
-                                            "SENSORS ( isEnable, isTriggered, sensorType, parentId)" +
-                                            "VALUES ( false, false," + type + ","+ parentId +")";
-                }
+                sqlCmd.CommandText = "INSERT INTO " +
+                                          "SENSORS ( ISENABLE, THRESHOLD, LOCATION, TYPE, PARENTID )" +
+                                          "VALUES ( " + sensor.IsEnabled + ", " + sensor.Threshold + ", \"" + sensor.Location + "\", \"" + sensor.Type + "\", " + sensor.ParentId + ")";
 
                 sqlCmd.ExecuteNonQuery();
                 sqlCmd.CommandText = "SELECT LAST_INSERT_ID() FROM SENSORS";
@@ -168,23 +146,72 @@ namespace Mes
             return id;
         }
 
-        public List<GenericSystem> getSensors()
+        private bool EditSensor(Sensor sensor)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
-            List<GenericSystem> systemList = new List<GenericSystem>();
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "UPDATE SENSORS " + 
+                                        "SET ISENABLE=" + sensor.IsEnabled + ", LOCATION=\"" + sensor.Location + "\",  THRESHOLD=" + sensor.Threshold + ", PARENTID=" + sensor.ParentId +
+                                        "WHERE ID=" + sensor.Id;
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return true;
+        }
+
+        private List<Sensor> getSensors(int id)
+        {
+            List<Sensor> sensorsList = new List<Sensor>;
+            
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
 
             try
             {
                 sqlConnection.Open();
                 sqlCmd.CommandText = "SELECT * FROM SYSTEMS";
+                if ( id != -1)
+                {
+                    sqlCmd.CommandText += " WHERE ID=" + id;
+                }
                 MySqlDataReader rdr = sqlCmd.ExecuteReader();
                 while (rdr.Read())
                 {
-                    if (rdr.GetInt32(1) == 1)
+                    Sensor sensor;
+                    switch(rdr.GetString(4))
                     {
-                        systemList.Add(new SecuritySystem(rdr.GetInt32(0)));
+                        case "FLOOD":
+                            sensor = new FloodSensor();
+                            break;
+                        case "MAGENETIC":
+                            sensor = new MagneticSensor();
+                            break;
+                        case "SMOKE":
+                            sensor = new SmokeSensor();
+                            break;
+                        case "MOTION":
+                            sensor = new MotionSensor();
+                            break;
                     }
+                        sensor.Id = rdr.GetInt32(0);
+                        sensor.IsEnabled = rdr.GetBoolean(1);
+                        sensor.Threshold = rdr.GetInt32(2);
+                        sensor.Location = rdr.GetString(3);
+                        sensor.Type = rdr.GetString(4);
+                        sensor.ParentId = rdr.GetInt16(5);
+                        sensorsList.Add(sensor);
                 }
                 rdr.Close();
             }
@@ -197,7 +224,31 @@ namespace Mes
             {
                 sqlConnection.Close();
             }
-            return systemList;
+            return sensors;
+        }
+
+        private bool removeSensor(int id)
+        {
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "DELETE FROM SENSORS " +
+                                        "WHERE ID=" + id;
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return true;
         }
 
         public bool createAlarmTable()

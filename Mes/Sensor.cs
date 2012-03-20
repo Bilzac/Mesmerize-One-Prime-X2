@@ -10,6 +10,7 @@ namespace Mes{
         string sensorType;      // Is this flood,magnetic,motion,etc. sensor?
         int sensorId;           // unique id of the sensor
         int parentId;           // id of the system it is under (security)
+        int threshold;
 
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;
@@ -197,6 +198,18 @@ namespace Mes{
             set
             {
                 parentId = value;
+            }
+        }
+
+        public int Threshold
+        {
+            get
+            {
+                return threshold;
+            }
+            set
+            {
+                threshold = value;
             }
         }
 
