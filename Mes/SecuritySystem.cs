@@ -614,7 +614,6 @@ namespace Mes
                                             sensors[z].SimulationSensor.Reading = reading;
                                             Console.WriteLine("Sensor: " + sensors[z].Id + " reading has changed");
                                             securityLogger.appendLog(string.Format("Sensor: {0} of Type: {1} at {2} reading value has changed to {3}",sensors[z].Id,sensors[z].Type,sensors[z].Location,reading.ToString()));
->>>>>>> Started adding comments to each of the classes.
                                         }
                                     }
                                 break;
