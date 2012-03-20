@@ -37,6 +37,7 @@ namespace Mes
         {
             createMessageQueue();
             id = identification;
+            queue.Purge();
         }
 
         public void createMessageQueue()
@@ -95,108 +96,77 @@ namespace Mes
 
                                 switch (deviceCategory) {
                                     case "SENSOR":
+                                        Sensor sensor = null;
                                         switch (deviceType)
                                         {
                                             case "MAGNETIC":
-                                                MagneticSensor tmpMagSensor = new MagneticSensor();
-                                                tmpMagSensor.Id = deviceId;
-                                                tmpMagSensor.Type = "MAGNETIC";
-                                                tmpMagSensor.Location = location;
-                                                tmpMagSensor.IsEnabled = isEnable;
-                                                tmpMagSensor.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
+                                                sensor = new MagneticSensor();
+                                                sensor.Type = "MAGNETIC";
                                                 break;
                                             case "MOTION":
-                                                MotionSensor tmpMotSensor = new MotionSensor();
-                                                tmpMotSensor.Id = deviceId;
-                                                tmpMotSensor.Type = "MOTION";
-                                                tmpMotSensor.Location = location;
-                                                tmpMotSensor.IsEnabled = isEnable;
-                                                tmpMotSensor.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
+                                                sensor = new MotionSensor();
+                                                sensor.Type = "MOTION";
                                                 break;
                                             case "FLOOD":
-                                                FloodSensor tmpFloSensor = new FloodSensor();
-                                                tmpFloSensor.Id = deviceId;
-                                                tmpFloSensor.Type = "FLOOD";
-                                                tmpFloSensor.Location = location;
-                                                tmpFloSensor.IsEnabled = isEnable;
-                                                tmpFloSensor.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
+                                                sensor = new FloodSensor();
+                                                sensor.Type = "FLOOD";
                                                 break;
                                             case "SMOKE":
-                                                SmokeSensor tmpSmoSensor = new SmokeSensor();
-                                                tmpSmoSensor.Id = deviceId;
-                                                tmpSmoSensor.Type = "SMOKE";
-                                                tmpSmoSensor.Location = location;
-                                                tmpSmoSensor.IsEnabled = isEnable;
-                                                tmpSmoSensor.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
-                                                break;
-                                            default:
+                                                sensor = new SmokeSensor();
+                                                sensor.Type = "SMOKE";
                                                 break;
                                         }
+                                        sensor.Id = deviceId;
+                                        sensor.Location = location;
+                                        sensor.IsEnabled = isEnable;
+                                        sensor.ParentId = id;
+                                        //threshold definition 
+                                        //Add to DB
+                                        //Store into List<device>
                                         break;
                                     case "ALARM":
+                                        Alarm alarm = null;
                                         switch (deviceType)
                                         {
                                             case "LIGHT":
                                                 /*
-                                                LightAlarm tmpLigAlarm = new LightAlarm();
-                                                tmpLigAlarm.Id = deviceId;
-                                                tmpLigAlarm.Type = "SMOKE";
-                                                tmpLigAlarm.Location = location;
-                                                tmpLigAlarm.IsEnabled = isEnable;
-                                                tmpLigAlarm.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
+                                                alarm = new LightAlarm();
+                                                alarm.Type = "LIGHT";
+                                                alarm.Id = deviceId;
                                                  * */
                                                 break;
                                             case "SIREN":
                                                 /*
-                                                SirenAlarm tmpSirAlarm = new SirenAlarm();
-                                                tmpSirAlarm.Id = deviceId;
-                                                tmpSirAlarm.Type = "SMOKE";
-                                                tmpSirAlarm.Location = location;
-                                                tmpSirAlarm.IsEnabled = isEnable;
-                                                tmpSirAlarm.ParentId = id;
-                                                //threshold definition
-                                                //Add to DB
-                                                //Store into List<device>
+                                                alarm = new SirenAlarm();
+                                                alarm.Type = "SIREN";
                                                  * */
                                                 break;
-                                            default:
-                                                break;
                                         }
+                                        //alarm.Location = location;
+                                        //alarm.IsEnabled = isEnable;
+                                        //alarm.ParentId = id;
+                                        //threshold definition
+                                        //Add to DB
+                                        //Store into List<device>
                                         break;
                                     case "MONITOR":
+                                        Monitor monitor = null;
                                         switch (deviceType)
                                         {
                                             case "MOTION":
                                                 /*
-                                                VideoCamera tmpCamera = new VideoCamera();
-                                                tmpCamera.Id = deviceId;
-                                                tmpCamera.IsEnabled = isEnable;
-                                                tmpCamera.Type = "VIDEO";
-                                                tmpCamera.ParentId = id;
-                                                tmpCamera.Location = location;
-                                                //threshold
-                                                //Add to DB
-                                                //Store into List<device>
+                                                monitor = new VideoCamera();
+                                                monitor.Type = "VIDEO";
                                                  * */
                                                 break;
-                                            default:
-                                                break;
                                         }
+                                        //monitor.Id = deviceId;
+                                        //monitor.IsEnabled = isEnable;
+                                        //monitor.ParentId = id;
+                                        //monitor.Location = location;
+                                        //threshold
+                                        //Add to DB
+                                        //Store into List<device>
                                         break;
                                     default:
                                         break;
@@ -362,7 +332,7 @@ namespace Mes
                                 }
                                 break;
                             case ("LOG"):
-
+                                securityLogger.appendLog(mesMessage.message);
                                 break;
                             case ("TRIGGER"):
                                 tmpParams = GetParams(mesMessage);

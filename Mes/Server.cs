@@ -48,6 +48,8 @@ namespace Mes
             Console.WriteLine("Intializing Security Server.");
             terminalLog.appendLog("Security Server Initializating");
             MessageQueue queue = new MessageQueue(queueName);
+            MesMessage mesMsg = new MesMessage();
+
             while (authentication == -1)
             {
                 Console.WriteLine("Please Enter Your Username");
@@ -104,8 +106,10 @@ namespace Mes
                         Console.WriteLine("Please specify the file path to the test file.");
                         terminalLog.appendLog("Executing Test Simulation of Security System");
                         terminalTest.File = Console.ReadLine();
-                        foreach (string cmd in terminalTest.getCommands()) {
-                            queue.Send(cmd,"Test");
+                        foreach (string cmd in terminalTest.getCommands()) {    
+                            mesMsg.type = "LOG";
+                            mesMsg.message = cmd;
+                            queue.Send(mesMsg);     
                         }
                         break;
                     case "EXIT":
