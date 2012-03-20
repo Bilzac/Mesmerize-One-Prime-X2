@@ -22,6 +22,7 @@ namespace Mes
         {
             string logFile = logFilePath + logFileName;
             string timeStamp = DateTime.Now.ToString();
+            StreamWriter logWriter;
 
             if (!Directory.Exists(logFilePath)) {
                 Directory.CreateDirectory(logFilePath);
@@ -34,13 +35,14 @@ namespace Mes
 
             try
             {
-                StreamWriter logWriter = File.AppendText(logFile);
+                logWriter = File.AppendText(logFile);
                 logWriter.WriteLine(timeStamp + " - " + Message);
                 logWriter.Flush();
                 logWriter.Close();
             }
             catch (Exception e)
             {
+                Console.WriteLine(Message);
                 Console.WriteLine(e.Message.ToString());
             }
         }

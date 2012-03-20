@@ -47,6 +47,7 @@ namespace Mes
             terminalTest = new TestHarness();
             Console.WriteLine("Intializing Security Server.");
             terminalLog.appendLog("Security Server Initializating");
+            MessageQueue queue = new MessageQueue(queueName);
             while (authentication == -1)
             {
                 Console.WriteLine("Please Enter Your Username");
@@ -80,7 +81,6 @@ namespace Mes
                         if (MessageQueue.Exists(queueName))
                         {
                             terminalLog.appendLog("Add Sensor Command Executed");
-                            MessageQueue queue = new MessageQueue(queueName);
                             queue.Send("Add Sensor message","Label");
                         }
                         else
@@ -104,8 +104,9 @@ namespace Mes
                         Console.WriteLine("Please specify the file path to the test file.");
                         terminalLog.appendLog("Executing Test Simulation of Security System");
                         terminalTest.File = Console.ReadLine();
-                        terminalTest.printCommands(terminalTest.getCommands());
-                        terminalLog.appendLog("Test Simulation of Security System Complete");
+                        foreach (string cmd in terminalTest.getCommands()) {
+                            queue.Send(cmd,"Test");
+                        }
                         break;
                     case "EXIT":
                         Console.WriteLine("Command Terminal shutting down!");
@@ -194,6 +195,7 @@ namespace Mes
             for (int i = 0; i < systemList.Count; i++)
             {
                 systemThreads.Add(new Thread(new ThreadStart(systemList[i].Run)));
+                systemThreads[i].Start();
             }
         }
 

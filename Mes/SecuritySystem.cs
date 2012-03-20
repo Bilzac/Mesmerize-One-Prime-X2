@@ -57,13 +57,17 @@ namespace Mes
                 if (MessageQueue.Exists(queueName))
                 {
                     queue = new MessageQueue(queueName);
-                    queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(SensorMessage) });
+                    queue.Formatter = new XmlMessageFormatter(new string[] { "System.String" });
+                    //queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(SensorMessage) });
                     try
                     {
                         // Receive and format the message.
-                        SensorMessage sensorMessage = (SensorMessage)queue.Receive().Body;
-                        msgLogger.appendLog(msgLogger.formatSensorMessage(sensorMessage));
-                        Console.WriteLine("Received: {0} {1}", sensorMessage.sensorId, sensorMessage.messageType);
+                        //SensorMessage sensorMessage = (SensorMessage)queue.Receive().Body;
+                        // msgLogger.appendLog(msgLogger.formatSensorMessage(sensorMessage));
+                        //Console.WriteLine("Received: {0} {1}", sensorMessage.sensorId, sensorMessage.messageType);
+                        Message message = queue.Receive();
+                        string testMessage = (string)message.Body;
+                        msgLogger.appendLog(testMessage);
                     }
 
                     catch (MessageQueueException)
@@ -81,6 +85,7 @@ namespace Mes
                 {
                     Console.WriteLine("Queue .\\security not Found");
                 }
+                System.Threading.Thread.Sleep(0);
             }
         }
 
