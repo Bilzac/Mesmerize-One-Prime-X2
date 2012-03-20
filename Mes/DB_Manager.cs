@@ -326,7 +326,7 @@ namespace Mes
                 sqlConnection.Open();
 
                 sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS " +
-                                        "ALARMS ( ID INT AUTO_INCREMENT, ISENABLE BOOL, SENSITIVITY INT, LOCATION VARCHAR(255), SENSORTYPE VARCHAR(255) NOT NULL," +
+                                        "ALARMS ( ID INT AUTO_INCREMENT, ISENABLE BOOL, SENSITIVITY INT, LOCATION VARCHAR(255), ALARMTYPE VARCHAR(255) NOT NULL," +
                                         " PARENTID INT NOT NULL, PRIMARY KEY(ID), FOREIGN KEY (PARENTID) REFERENCES SYSTEMS(systemId) )";
                 sqlCmd.ExecuteNonQuery();
 
@@ -353,7 +353,7 @@ namespace Mes
             {
                 sqlConnection.Open();
                 sqlCmd.CommandText = "INSERT INTO " +
-                                          "ALARMS ( ISENABLE, SENSITIVITY, LOCATION, SENSORTYPE, PARENTID ) " +
+                                          "ALARMS ( ISENABLE, SENSITIVITY, LOCATION, ALARMTYPE, PARENTID ) " +
                                           "VALUES ( " + alarm.IsEnabled + ", " + alarm.Sensitivity + ", \"" + alarm.Location + "\", \"" + alarm.Type + "\", " + alarm.ParentId + ")";
 
                 sqlCmd.ExecuteNonQuery();
@@ -372,15 +372,15 @@ namespace Mes
             return id;
         }
 
-        public bool EditAlarm(Sensor alarm)
+        public bool EditAlarm(Alarm alarm)
         {
             MySqlConnection sqlConnection = new MySqlConnection(connectionString);
             MySqlCommand sqlCmd = sqlConnection.CreateCommand();
             try
             {
                 sqlConnection.Open();
-                sqlCmd.CommandText = "UPDATE ALARM " +
-                                        "SET ISENABLE=" + alarm.IsEnabled + ", LOCATION=\"" + alarm.Location + "\",  SENSITIVITY=" + alarm.Threshold + ", PARENTID=" + alarm.ParentId +
+                sqlCmd.CommandText = "UPDATE ALARMS " +
+                                        "SET ISENABLE=" + alarm.IsEnabled + ", LOCATION=\"" + alarm.Location + "\",  SENSITIVITY=" + alarm.Sensitivity + ", PARENTID=" + alarm.ParentId +
                                         " WHERE ID=" + alarm.Id;
                 sqlCmd.ExecuteNonQuery();
             }
@@ -458,7 +458,7 @@ namespace Mes
             try
             {
                 sqlConnection.Open();
-                sqlCmd.CommandText = "DELETE FROM ALARM " +
+                sqlCmd.CommandText = "DELETE FROM ALARMS " +
                                         "WHERE ID=" + id;
                 sqlCmd.ExecuteNonQuery();
             }
@@ -579,6 +579,7 @@ namespace Mes
                     {
                         SecuritySystem system = new SecuritySystem(rdr.GetInt32(0));
                         system.Sensors = GetSensors(-1, system.Id);
+                        system.Alarms = GetAlarms(-1, system.Id);
                         systemList.Add(system);
                     }
                 }

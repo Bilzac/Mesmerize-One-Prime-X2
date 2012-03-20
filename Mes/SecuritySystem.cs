@@ -131,7 +131,7 @@ namespace Mes
                                         break;
                                     case "ALARM":
                                         Alarm alarm = null;
-                                        switch (deviceType)
+                                        switch (deviceCategory)
                                         {
                                             case "LIGHT":
                                                 alarm = new LightAlarm();
@@ -142,18 +142,20 @@ namespace Mes
                                                 alarm = new SirenAlarm();
                                                 alarm.Type = "SIREN";
                                                 break;
+                                            default:
+                                                break;
                                         }
                                         alarm.Location = location;
                                         alarm.IsEnabled = isEnable;
                                         alarm.ParentId = id;
                                         alarm.Sensitivity = threshold;
-                                        //Add to DB
-                                        //Store into List<device>
-                                        //securityLogger.appendLog("Added Alarm: " + alarm.Id.ToString() + " of Type: " + alarm.Type);
+                                        alarm.Id = mesDB.AddAlarm(alarm);
+                                        alarms.Add(alarm);
+                                        securityLogger.appendLog("Added Alarm: " + alarm.Id.ToString() + " of Type: " + alarm.Type);
                                         break;
                                     case "MONITOR":
                                         Monitor monitor = null;
-                                        switch (deviceType)
+                                        switch (deviceCategory)
                                         {
                                             case "MOTION":
                                                 monitor = new VideoCamera();
@@ -193,6 +195,7 @@ namespace Mes
                                 threshold = Convert.ToInt16(tmpParams.ElementAt(4));
                                 location = tmpParams.ElementAt(5).ToUpper();
                                 List<Sensor> sensorOutput = new List<Sensor>();
+                                List<Alarm> alarmOutput = new List<Alarm>();
                                 switch (deviceType) {
                                     case ("SENSOR"):
                                         if (deviceId > 0)
@@ -222,7 +225,31 @@ namespace Mes
                                         Console.WriteLine("======================================================================");
                                         break;
                                     case ("ALARM"):
-
+                                        if (deviceId > 0)
+                                        {
+                                            alarmOutput = mesDB.GetAlarms(deviceId, -1);
+                                            securityLogger.appendLog("User has requested to view target alarm.");
+                                        }
+                                        else
+                                        {
+                                            alarmOutput = mesDB.GetAlarms(-1,-1);
+                                            securityLogger.appendLog("User has requested to view all alarms.");
+                                        }
+                                        Console.WriteLine("======================================================================");
+                                        Console.WriteLine("======================================================================");
+                                        Console.WriteLine("=====================     Showing Alarms     ========================");
+                                        Console.WriteLine("======================================================================");
+                                        foreach (Alarm tmpAlarm in alarmOutput)
+                                        {
+                                            Console.WriteLine("======================================================================");
+                                            Console.WriteLine("Alarm Type: " + tmpAlarm.Type + "     Alarm ID: " + tmpAlarm.Id);
+                                            Console.WriteLine("----------------------------------------------------------------------");
+                                            Console.WriteLine("Alarm Armed: " + tmpAlarm.IsEnabled.ToString());
+                                            Console.WriteLine("Alarm Triggered: " + tmpAlarm.IsTriggered.ToString());
+                                            Console.WriteLine("Alarm Location: " + tmpAlarm.Location);
+                                            Console.WriteLine("Alarm Sensitivity: " + tmpAlarm.Sensitivity);
+                                        }
+                                        Console.WriteLine("======================================================================");
                                         break;
                                     case ("MONITOR"):
 
@@ -286,6 +313,14 @@ namespace Mes
                                             alarms.ElementAt(index).Location = location;
                                             alarms.ElementAt(index).IsEnabled = isEnable;
                                             alarms.ElementAt(index).Sensitivity = threshold;
+                                            if (mesDB.EditAlarm(alarms.ElementAt(index)))
+                                            {
+                                                securityLogger.appendLog("Successfully edited alarm: " + alarms.ElementAt(index).Id.ToString());
+                                            }
+                                            else
+                                            {
+                                                securityLogger.appendLog("Failed to edited alarm: " + alarms.ElementAt(index).Id.ToString());
+                                            }
                                         }
                                         else
                                         {
@@ -353,7 +388,7 @@ namespace Mes
                                         }
                                         break;
                                     case "ALARM":
-                                        /*foreach (Alarm tmpAlarm in alarms)
+                                        foreach (Alarm tmpAlarm in alarms)
                                         {
                                             if (tmpAlarm.Id == deviceId) {
                                                 index = i;
@@ -362,14 +397,16 @@ namespace Mes
                                         }
                                         if (index >= 0)
                                         {
-                                            //Remove from DB send alarms.ElementAt(index).id;
+
+                                            int tmpId = alarms.ElementAt(index).Id;
+                                            mesDB.RemoveAlarm(alarms.ElementAt(index).Id);
                                             alarms.RemoveAt(index);
+                                            securityLogger.appendLog("Successfully removed alarm: " + tmpId.ToString());
                                         }
                                         else
                                         {
                                             securityLogger.appendLog("Failed to remove alarm");
                                         }
-                                         * */
                                         break;
                                     case "MONITOR":
                                         /*foreach (Monitor tmpMonitor in monitors)
@@ -526,6 +563,18 @@ namespace Mes
             set
             {
                 sensors = value;
+            }
+        }
+
+        public List<Alarm> Alarms
+        {
+            get
+            {
+                return alarms;
+            }
+            set
+            {
+                alarms = value;
             }
         }
     }
