@@ -21,7 +21,7 @@ namespace Mes
     {
         MessageQueue queue = null;
         Message message = null;
-        MesMessage sensorMessage = null;
+        //SensorMessage sensorMessage = null;
         string queueName = @".\Private$\security";
         Logger msgLogger = new Logger();
 
