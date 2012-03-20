@@ -8,13 +8,11 @@ using System.Messaging;
 namespace Mes
 {
     // object to fill a message with sensor information
-    public class SensorMessage {
-        public int sensorId;
-        public int messageType;         // The type may indicate what parameter is changing
-        public string messageString;    // This is the parameter value (for string parameters)
-        public int messageValue;        // This is the parameter value (for integer parameters)
+    public class MesMessage {
+        public string type;             // Add, edit, remove, or view
+        public string messageType;      // The type may indicate what parameter is changing
     };
-    
+
     class SecuritySystem : GenericSystem
     {
         MessageQueue queue = null;
@@ -57,8 +55,8 @@ namespace Mes
                 if (MessageQueue.Exists(queueName))
                 {
                     queue = new MessageQueue(queueName);
-                    queue.Formatter = new XmlMessageFormatter(new string[] { "System.String" });
-                    //queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(SensorMessage) });
+                    //queue.Formatter = new XmlMessageFormatter(new string[] { "System.String" });
+                    queue.Formatter = new XmlMessageFormatter(new Type[] { typeof(MesMessage) });
                     try
                     {
                         // Receive and format the message.
