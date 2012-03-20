@@ -322,7 +322,7 @@ namespace Mes
                         break;
                     case "DISABLESIM":
                         Console.WriteLine("Stopping Simulation.");
-                        terminalLog.appendLog("EnableSim");
+                        terminalLog.appendLog("DisableSim");
                         if (MessageQueue.Exists(queueName))
                         {
                             mesMsg.type = "DISABLESIM";

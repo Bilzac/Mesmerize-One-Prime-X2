@@ -537,6 +537,7 @@ namespace Mes
                                         {
                                             int reading = Convert.ToInt32(tmpParams.ElementAt(1));
                                             sensors[z].SimulationSensor.Reading = reading;
+                                            securityLogger.appendLog("Simulated a reading change at sensor " + simId.ToString());
                                         }
                                     }
                                 break;
