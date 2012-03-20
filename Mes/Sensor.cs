@@ -4,13 +4,12 @@ using System.Messaging;
 namespace Mes{
     public abstract class Sensor : IObservable<Sensor>
     {
-        bool isEnabled;
-        bool isTriggered;
-        string location;
-        string sensorType;
-        bool canTrigger;
-        int sensorId;
-        int parentId;
+        bool isEnabled;         // The sensor can be triggered
+        bool isTriggered;       // Triggered state indicates the sensor was tripped
+        string location;        // what room is the component in
+        string sensorType;      // Is this flood,magnetic,motion,etc. sensor?
+        int sensorId;           // unique id of the sensor
+        int parentId;           // id of the system it is under (security)
 
         public delegate void OnEnableEventHandler();
         public event EventHandler EnableChanged;

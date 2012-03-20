@@ -9,11 +9,9 @@ namespace Mes
     {
         public LightAlarm()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "light";
-            alarmId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "light";
         }
     }
 }

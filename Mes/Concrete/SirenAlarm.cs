@@ -9,11 +9,9 @@ namespace Mes
     {
         public SirenAlarm()
         {
-            isEnabled = false;
-            isTriggered = false;
-            location = null;
-            sensorType = "siren";
-            alarmId = 0;
+            this.Disable();
+            this.Untrigger();
+            this.Type = "siren";
         }
     }
 }
