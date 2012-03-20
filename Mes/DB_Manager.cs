@@ -226,7 +226,7 @@ namespace Mes
             return true;
         }
 
-        public List<Sensor> GetSensors(int id)
+        public List<Sensor> GetSensors(int id, int parentId)
         {
             List<Sensor> sensorsList = new List<Sensor>();
             
@@ -241,6 +241,11 @@ namespace Mes
                 {
                     sqlCmd.CommandText += " WHERE ID=" + id;
                 }
+                else if (parentId != -1)
+                {
+                    sqlCmd.CommandText += " WHERE PARENTID=" + parentId;
+                }
+
                 MySqlDataReader rdr = sqlCmd.ExecuteReader();
                 while (rdr.Read())
                 {
@@ -306,6 +311,9 @@ namespace Mes
             return true;
         }
 
+        //*******************************Alarms*******************************//
+
+
         public bool CreateAlarmTable()
         {
 
@@ -317,8 +325,9 @@ namespace Mes
 
                 sqlConnection.Open();
 
-                sqlCmd.CommandText = "Create Table IF NOT EXISTS " +
-                                        "Alarms (monitorId int, isEnable bit, isTriggered bit, location varchar(255), sensorType varchar(255), canTrigger bit)";
+                sqlCmd.CommandText = "CREATE TABLE IF NOT EXISTS " +
+                                        "ALARMS ( ID INT AUTO_INCREMENT, ISENABLE BOOL, SENSITIVITY INT, LOCATION VARCHAR(255), SENSORTYPE VARCHAR(255) NOT NULL," +
+                                        " PARENTID INT NOT NULL, PRIMARY KEY(ID), FOREIGN KEY (PARENTID) REFERENCES SYSTEMS(systemId) )";
                 sqlCmd.ExecuteNonQuery();
 
                 return true;
@@ -334,6 +343,138 @@ namespace Mes
             }
             return false;
         }
+
+        public int AddAlarm(Alarm alarm)
+        {
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+            int id = -1;
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "INSERT INTO " +
+                                          "ALARMS ( ISENABLE, SENSITIVITY, LOCATION, SENSORTYPE, PARENTID ) " +
+                                          "VALUES ( " + alarm.IsEnabled + ", " + alarm.Sensitivity + ", \"" + alarm.Location + "\", \"" + alarm.Type + "\", " + alarm.ParentId + ")";
+
+                sqlCmd.ExecuteNonQuery();
+                sqlCmd.CommandText = "SELECT LAST_INSERT_ID() FROM ALARMS";
+                id = Convert.ToInt32(sqlCmd.ExecuteScalar());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return id;
+        }
+
+        public bool EditAlarm(Sensor alarm)
+        {
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "UPDATE ALARM " +
+                                        "SET ISENABLE=" + alarm.IsEnabled + ", LOCATION=\"" + alarm.Location + "\",  SENSITIVITY=" + alarm.Threshold + ", PARENTID=" + alarm.ParentId +
+                                        " WHERE ID=" + alarm.Id;
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return true;
+        }
+
+        public List<Alarm> GetAlarms(int id, int parentId)
+        {
+            List<Alarm> alarmList = new List<Alarm>();
+
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "SELECT * FROM ALARMS";
+                if (id != -1)
+                {
+                    sqlCmd.CommandText += " WHERE ID=" + id;
+                }
+                else if (parentId != -1)
+                {
+                    sqlCmd.CommandText += " WHERE PARENTID=" + parentId;
+                }
+                MySqlDataReader rdr = sqlCmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Alarm alarm = null;
+                    switch (rdr.GetString(4))
+                    {
+                        case "SIREN":
+                            alarm = new SirenAlarm();
+                            break;
+                        case "LIGHT":
+                            alarm = new LightAlarm();
+                            break;
+                    }
+                    alarm.Id = rdr.GetInt32(0);
+                    alarm.IsEnabled = rdr.GetBoolean(1);
+                    alarm.Sensitivity = rdr.GetInt32(2);
+                    alarm.Location = rdr.GetString(3);
+                    alarm.Type = rdr.GetString(4);
+                    alarm.ParentId = rdr.GetInt16(5);
+                    alarmList.Add(alarm);
+                }
+                rdr.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return alarmList;
+        }
+
+        public bool RemoveAlarm(int id)
+        {
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            MySqlCommand sqlCmd = sqlConnection.CreateCommand();
+            try
+            {
+                sqlConnection.Open();
+                sqlCmd.CommandText = "DELETE FROM ALARM " +
+                                        "WHERE ID=" + id;
+                sqlCmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not connect to database!");
+                Console.WriteLine("{0} Exception caught.", e);
+                return false;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return true;
+        }
+
 
         public bool CreateMonitorTable()
         {
@@ -437,7 +578,7 @@ namespace Mes
                     if (rdr.GetInt32(1) == 1)
                     {
                         SecuritySystem system = new SecuritySystem(rdr.GetInt32(0));
-                        system.Sensors = GetSensors(system.Id);
+                        system.Sensors = GetSensors(-1, system.Id);
                         systemList.Add(system);
                     }
                 }

@@ -197,12 +197,12 @@ namespace Mes
                                     case ("SENSOR"):
                                         if (deviceId > 0)
                                         {
-                                            sensorOutput = mesDB.GetSensors(deviceId);
+                                            sensorOutput = mesDB.GetSensors(deviceId, -1);
                                             securityLogger.appendLog("User has requested to view target sensor.");
                                         }
                                         else
                                         {
-                                            sensorOutput = mesDB.GetSensors(-1);
+                                            sensorOutput = mesDB.GetSensors(-1,-1);
                                             securityLogger.appendLog("User has requested to view all sensors.");
                                         }
                                         Console.WriteLine("======================================================================");
