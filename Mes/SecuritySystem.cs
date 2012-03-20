@@ -614,7 +614,7 @@ namespace Mes
                                 }
                                 else
                                 {
-                                    securityLogger.appendLog(string.Format("Failed to trigger {0}", deviceCategory));
+                                    //securityLogger.appendLog(string.Format("Failed to trigger Alarm in same location", deviceCategory));
                                 }
                                 break;
                             //-------------------------------------------------------------------------------------------------------

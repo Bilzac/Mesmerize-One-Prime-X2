@@ -90,7 +90,6 @@ namespace Mes
             Console.WriteLine("     REMOVE");
             Console.WriteLine("     EDIT");
             Console.WriteLine("     VIEW");
-            Console.WriteLine("     TEST");
             Console.WriteLine("     STATUS");
             Console.WriteLine("     ARM");
             Console.WriteLine("     DISARM");
@@ -152,7 +151,6 @@ namespace Mes
                         Console.WriteLine("     REMOVE");
                         Console.WriteLine("     EDIT");
                         Console.WriteLine("     VIEW");
-                        Console.WriteLine("     TEST");
                         Console.WriteLine("     STATUS");
                         Console.WriteLine("     ARM");
                         Console.WriteLine("     DISARM");
@@ -368,7 +366,7 @@ namespace Mes
                         mesMsg.message = deviceId + "," + deviceType + "," + deviceCategory + "," + isEnable + "," + "0" + "," + location;
                         queue.Send(mesMsg);
                         break;
-                    case "TEST":
+                    case "TEST1234567890":
                         //-----------------------------------------------------------------------------------
                         //Test Command 
                         //-----------------------------------------------------------------------------------
@@ -521,7 +519,6 @@ namespace Mes
                         Console.WriteLine("     REMOVE");
                         Console.WriteLine("     EDIT");
                         Console.WriteLine("     VIEW");
-                        Console.WriteLine("     TEST");
                         Console.WriteLine("     STATUS");
                         Console.WriteLine("     ARM");
                         Console.WriteLine("     DISARM");
